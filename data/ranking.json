@@ -1,5 +1,5 @@
 {
- "updated": 1792707311,
+ "updated": 1792709356,
  "players": [
   {
    "name": "Kaori",
@@ -48,12 +48,13 @@
   {
    "name": "GuiltyConscience",
    "riot": "GuiltyConscience#JRZ",
-   "tier": "GRANDMASTER",
+   "tier": "MASTER",
    "div": 1,
-   "lp": 1585,
-   "w": 329,
+   "lp": 1611,
+   "w": 330,
    "l": 296,
    "champs": [
+    "Shyvana",
     "Shyvana",
     "Shyvana",
     "Shyvana",
@@ -62,10 +63,9 @@
     "Shyvana",
     "Viktor",
     "Lillia",
-    "Lillia",
-    "Qiyana"
+    "Lillia"
    ],
-   "last10": "LWWLLLWLLL"
+   "last10": "WLWWLLLWLL"
   },
   {
    "name": "Purple",
