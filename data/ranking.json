@@ -1,5 +1,5 @@
 {
- "updated": 1792689375,
+ "updated": 1792689847,
  "players": [
   {
    "name": "Kaori",
@@ -72,10 +72,11 @@
    "riot": "PurpleBBear#EUW",
    "tier": "GOLD",
    "div": 4,
-   "lp": 59,
-   "w": 54,
+   "lp": 78,
+   "w": 55,
    "l": 53,
    "champs": [
+    "Vex",
     "Tristana",
     "Vayne",
     "Tristana",
@@ -84,10 +85,9 @@
     "Tristana",
     "Tristana",
     "Ornn",
-    "Vex",
     "Vex"
    ],
-   "last10": "LLLLLLLLLL"
+   "last10": "WLLLLLLLLL"
   },
   {
    "name": "Bilou",
