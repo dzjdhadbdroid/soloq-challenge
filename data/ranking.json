@@ -1,0 +1,93 @@
+{
+ "updated": 1792676900,
+ "players": [
+  {
+   "name": "Kaori",
+   "riot": "Kaori#EUW33",
+   "tier": "CHALLENGER",
+   "div": 1,
+   "lp": 4531,
+   "w": 827,
+   "l": 683,
+   "champs": [
+    "Lucian",
+    "Sivir",
+    "Renata",
+    "Zeri",
+    "Tristana",
+    "Tristana",
+    "Varus",
+    "Viktor",
+    "Xayah",
+    "Viktor"
+   ],
+   "last10": "WWWWWLWLWL"
+  },
+  {
+   "name": "KING VON",
+   "riot": "KING VON#DAMBG",
+   "tier": "GRANDMASTER",
+   "div": 1,
+   "lp": 1804,
+   "w": 556,
+   "l": 497,
+   "champs": [
+    "Ambessa",
+    "Garen",
+    "Garen",
+    "Garen",
+    "DrMundo",
+    "Garen",
+    "Garen",
+    "Ambessa",
+    "DrMundo",
+    "Garen"
+   ],
+   "last10": "WWLWWWWWWL"
+  },
+  {
+   "name": "GuiltyConscience",
+   "riot": "GuiltyConscience#JRZ",
+   "tier": "GRANDMASTER",
+   "div": 1,
+   "lp": 1651,
+   "w": 326,
+   "l": 291,
+   "champs": [
+    "Lillia",
+    "Qiyana",
+    "Chogath",
+    "Naafiri",
+    "Chogath",
+    "Shyvana",
+    "Shyvana",
+    "Shyvana",
+    "Shyvana",
+    "JarvanIV"
+   ],
+   "last10": "LLLLLLLWLL"
+  },
+  {
+   "name": "Adil",
+   "riot": "PurpleBBear#EUW",
+   "tier": "GOLD",
+   "div": 4,
+   "lp": 59,
+   "w": 54,
+   "l": 53,
+   "champs": [
+    "Tristana",
+    "Vayne",
+    "Tristana",
+    "Vex",
+    "Vayne",
+    "Tristana",
+    "Tristana",
+    "Ornn",
+    "Vex",
+    "Vex"
+   ],
+   "last10": "LLLLLLLLLL"
+  }
+ ]
+}
