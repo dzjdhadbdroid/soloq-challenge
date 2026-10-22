@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Partie en cours · SoloQ Challenge</title>
+<style>
+:root{color-scheme:dark;--bg:#0e141e;--card:#162030;--line:#233248;--txt:#e8eef7;--mut:#8394ab;--blue:#3b82f6;--red:#ef4444;--gold:#f5c542}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:24px;padding:14px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font-weight:800;font-size:20px;color:var(--txt);text-decoration:none}.logo b{color:var(--gold)}
+.back{color:var(--mut);text-decoration:none;font-size:14px;padding:8px 14px;border-radius:8px}.back:hover{background:var(--card);color:var(--txt)}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 16px 48px}
+h1{margin:0 0 6px;font-size:26px}
+.sub{color:var(--mut);margin:0 0 22px;font-size:14px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;margin-right:8px;box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:p 1.6s infinite}
+@keyframes p{70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.team{border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid var(--line)}
+.team.b{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.35)}
+.team.r{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.35)}
+.team h2{margin:0 0 12px;font-size:14px;text-transform:uppercase;letter-spacing:.8px}
+.team.b h2{color:#8db8ff}.team.r h2{color:#ff9d9d}
+.row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+.pc.me{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.pic{display:flex;align-items:center;gap:6px}
+.champ{width:64px;height:64px;border-radius:10px;background:#0b1220;display:grid;place-items:center;font-size:11px;color:var(--mut);overflow:hidden}
+.champ img{width:100%;height:100%;display:block}
+.sp{display:flex;flex-direction:column;gap:4px}
+.sp div{width:28px;height:28px;border-radius:6px;background:#0b1220;overflow:hidden;display:grid;place-items:center;font-size:8px;color:var(--mut)}
+.sp img{width:100%;height:100%;display:block}
+.nm{font-weight:700;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{font-size:10px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.rk{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);min-height:26px}
+.rk img{width:26px;height:26px;object-fit:contain}
+.empty{padding:40px 16px;text-align:center;color:var(--mut)}
+.empty a{color:var(--gold)}
+@media(max-width:820px){.row{grid-template-columns:repeat(5,minmax(120px,1fr));overflow-x:auto}.team{overflow-x:auto}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">SoloQ<b>Challenge</b></a>
+  <a class="back" href="index.html">← Retour au classement</a>
+</header>
+<div class="wrap" id="app"><div class="empty">Chargement…</div></div>
+
+<script>
+var QUEUES = {420:"Classée Solo/Duo",440:"Classée Flex",400:"Normal Draft",430:"Normal Blind",450:"ARAM",490:"Normal",700:"Clash",1700:"Arena",1900:"URF",0:"Partie personnalisée"};
+var TLBL = {IRON:"Fer",BRONZE:"Bronze",SILVER:"Argent",GOLD:"Or",PLATINUM:"Platine",EMERALD:"Émeraude",DIAMOND:"Diamant",MASTER:"Maître",GRANDMASTER:"Grandmaître",CHALLENGER:"Challenger"};
+var ROM = ["","I","II","III","IV"];
+var CD = "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/";
+var DD = {ver:null, champs:{}, spells:{}};
+var LIVE = null, timer = null;
+var params = new URLSearchParams(location.search);
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+function embUrls(t){t=t.toLowerCase();return [CD+"ranked-mini-crests/"+t+".png",CD+"ranked-mini-crests/"+t+".svg",CD+"ranked-emblem/emblem-"+t+".png","ranks/"+t+".png"];}
+function embErr(img){
+  var u = JSON.parse(img.dataset.u), i = +img.dataset.i + 1;
+  if(i < u.length){img.dataset.i = i; img.src = u[i];} else {img.remove();}
+}
+function rankHtml(r){
+  if(!r) return '<div class="rk">Non classé</div>';
+  var hi = r.tier==="MASTER"||r.tier==="GRANDMASTER"||r.tier==="CHALLENGER";
+  var u = embUrls(r.tier);
+  return '<div class="rk"><img alt="" src="'+u[0]+'" data-i="0" data-u="'+esc(JSON.stringify(u))+'" onerror="embErr(this)">'
+    + '<span>'+TLBL[r.tier]+(hi?"":" "+ROM[r.div])+' · '+r.lp+' LP</span></div>';
+}
+function champHtml(id){
+  var c = DD.champs[id];
+  if(c && DD.ver) return '<img alt="'+esc(c.name)+'" title="'+esc(c.name)+'" src="https://ddragon.leagueoflegends.com/cdn/'+DD.ver+'/img/champion/'+c.id+'.png">';
+  return "?";
+}
+function spellHtml(id){
+  var s = DD.spells[id];
+  if(s && DD.ver) return '<img alt="'+esc(s.name)+'" title="'+esc(s.name)+'" src="https://ddragon.leagueoflegends.com/cdn/'+DD.ver+'/img/spell/'+s.id+'.png">';
+  return "";
+}
+function cardHtml(p){
+  var c = DD.champs[p.champ];
+  return '<div class="pc'+(p.friend?' me':'')+'">'
+    + (p.friend?'<div class="tag">'+esc(p.friend.split("#")[0])+'</div>':'')
+    + '<div class="pic"><div class="champ">'+champHtml(p.champ)+'</div>'
+    + '<div class="sp"><div>'+spellHtml(p.spells[0])+'</div><div>'+spellHtml(p.spells[1])+'</div></div></div>'
+    + '<div class="nm" title="'+esc(p.name)+'">'+esc(p.name.split("#")[0])+'</div>'
+    + '<div style="font-size:11px;color:var(--mut)">'+(c?esc(c.name):"")+'</div>'
+    + rankHtml(p.rank) + '</div>';
+}
+function clock(g){
+  if(!g.start) return "Chargement de la partie";
+  var s = Math.max(0, Math.floor((Date.now() - g.start)/1000));
+  return Math.floor(s/60)+":"+("0"+(s%60)).slice(-2);
+}
+function render(){
+  var app = document.getElementById("app");
+  var gid = params.get("g");
+  if(!gid && LIVE && params.get("p")) gid = LIVE.players[params.get("p")];
+  var g = LIVE && LIVE.games && LIVE.games[gid];
+  if(!g){
+    clearInterval(timer);
+    app.innerHTML = '<div class="empty">Cette partie est terminée ou n\'est plus en cours.<br><br><a href="index.html">← Retour au classement</a></div>';
+    return;
+  }
+  var blue = g.players.filter(function(p){return p.team===100}), red = g.players.filter(function(p){return p.team===200});
+  var names = g.players.filter(function(p){return p.friend}).map(function(p){return p.friend.split("#")[0]});
+  app.innerHTML = '<h1><span class="dot"></span>'+esc(names.join(" & "))+' en partie</h1>'
+    + '<p class="sub">'+(QUEUES[g.queue]||"Partie")+' · <span id="clock">'+clock(g)+'</span> · données actualisées toutes les ~5 min (la partie peut être déjà terminée)</p>'
+    + '<div class="team b"><h2>Équipe bleue</h2><div class="row">'+blue.map(cardHtml).join("")+'</div></div>'
+    + '<div class="team r"><h2>Équipe rouge</h2><div class="row">'+red.map(cardHtml).join("")+'</div></div>';
+  clearInterval(timer);
+  timer = setInterval(function(){var e=document.getElementById("clock");if(e)e.textContent=clock(g)},1000);
+}
+function loadLive(){
+  fetch("data/live.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){LIVE=d;render()})
+  .catch(function(){LIVE={games:{},players:{}};render()});
+}
+function loadDD(){
+  fetch("https://ddragon.leagueoflegends.com/api/versions.json").then(function(r){return r.json()}).then(function(v){
+    DD.ver = v[0];
+    return Promise.all([
+      fetch("https://ddragon.leagueoflegends.com/cdn/"+DD.ver+"/data/fr_FR/champion.json").then(function(r){return r.json()}),
+      fetch("https://ddragon.leagueoflegends.com/cdn/"+DD.ver+"/data/fr_FR/summoner.json").then(function(r){return r.json()})
+    ]);
+  }).then(function(a){
+    Object.keys(a[0].data).forEach(function(k){var c=a[0].data[k];DD.champs[c.key]={id:c.id,name:c.name}});
+    Object.keys(a[1].data).forEach(function(k){var s=a[1].data[k];DD.spells[s.key]={id:s.id,name:s.name}});
+    render();
+  }).catch(function(){});
+}
+loadLive(); loadDD();
+setInterval(loadLive, 60000);
+</script>
+</body>
+</html>
