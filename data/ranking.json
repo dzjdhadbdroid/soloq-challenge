@@ -1,5 +1,5 @@
 {
- "updated": 1792686477,
+ "updated": 1792686943,
  "players": [
   {
    "name": "Kaori",
@@ -88,6 +88,28 @@
     "Vex"
    ],
    "last10": "LLLLLLLLLL"
+  },
+  {
+   "name": "Bilou",
+   "riot": "Salif Keita#MALI",
+   "tier": "EMERALD",
+   "div": 3,
+   "lp": 20,
+   "w": 124,
+   "l": 110,
+   "champs": [
+    "Akali",
+    "Leblanc",
+    "Akali",
+    "Akali",
+    "Akali",
+    "Akali",
+    "Ahri",
+    "Leblanc",
+    "Akali",
+    "Akali"
+   ],
+   "last10": "LLWWWLLLLW"
   }
  ]
 }
