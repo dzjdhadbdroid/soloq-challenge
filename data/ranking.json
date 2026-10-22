@@ -1,27 +1,93 @@
 {
- "updated": 1792683251,
+ "updated": 1792686477,
  "players": [
   {
-   "name": "Bilou",
-   "riot": "Salif Keita#mali",
-   "tier": "EMERALD",
-   "div": 3,
-   "lp": 20,
-   "w": 124,
-   "l": 110,
+   "name": "Kaori",
+   "riot": "Kaori#EUW33",
+   "tier": "CHALLENGER",
+   "div": 1,
+   "lp": 4531,
+   "w": 827,
+   "l": 683,
    "champs": [
-    "Akali",
-    "Leblanc",
-    "Akali",
-    "Akali",
-    "Akali",
-    "Akali",
-    "Ahri",
-    "Leblanc",
-    "Akali",
-    "Akali"
+    "Lucian",
+    "Sivir",
+    "Renata",
+    "Zeri",
+    "Tristana",
+    "Tristana",
+    "Varus",
+    "Viktor",
+    "Xayah",
+    "Viktor"
    ],
-   "last10": "LLWWWLLLLW"
+   "last10": "WWWWWLWLWL"
+  },
+  {
+   "name": "KING VON",
+   "riot": "KING VON#DAMBG",
+   "tier": "GRANDMASTER",
+   "div": 1,
+   "lp": 1804,
+   "w": 556,
+   "l": 497,
+   "champs": [
+    "Ambessa",
+    "Garen",
+    "Garen",
+    "Garen",
+    "DrMundo",
+    "Garen",
+    "Garen",
+    "Ambessa",
+    "DrMundo",
+    "Garen"
+   ],
+   "last10": "WWLWWWWWWL"
+  },
+  {
+   "name": "GuiltyConscience",
+   "riot": "GuiltyConscience#JRZ",
+   "tier": "GRANDMASTER",
+   "div": 1,
+   "lp": 1617,
+   "w": 326,
+   "l": 292,
+   "champs": [
+    "Lillia",
+    "Lillia",
+    "Qiyana",
+    "Chogath",
+    "Naafiri",
+    "Chogath",
+    "Shyvana",
+    "Shyvana",
+    "Shyvana",
+    "Shyvana"
+   ],
+   "last10": "LLLLLLLLWL"
+  },
+  {
+   "name": "Purple",
+   "riot": "PurpleBBear#EUW",
+   "tier": "GOLD",
+   "div": 4,
+   "lp": 59,
+   "w": 54,
+   "l": 53,
+   "champs": [
+    "Tristana",
+    "Vayne",
+    "Tristana",
+    "Vex",
+    "Vayne",
+    "Tristana",
+    "Tristana",
+    "Ornn",
+    "Vex",
+    "Vex"
+   ],
+   "last10": "LLLLLLLLLL"
   }
  ]
 }
