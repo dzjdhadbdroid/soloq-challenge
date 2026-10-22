@@ -45,15 +45,13 @@ result = []
 for p in players:
     riot = p["riot"]
     try:
-        # 1. PUUID (une seule fois par joueur)
-        if riot not in puuids:
-            name, tag = riot.rsplit("#", 1)
-            acc = get(f"{ROUTING}/riot/account/v1/accounts/by-riot-id/{name}/{tag}")
-            if not acc:
-                print(f"! compte introuvable : {riot}")
-                continue
-            puuids[riot] = acc["puuid"]
-        puuid = puuids[riot]
+       # 1. PUUID (toujours recalculé avec la clé actuelle)
+        name, tag = riot.rsplit("#", 1)
+        acc = get(f"{ROUTING}/riot/account/v1/accounts/by-riot-id/{name}/{tag}")
+        if not acc:
+            print(f"! compte introuvable : {riot}")
+            continue
+        puuid = acc["puuid"]
 
         # 2. Rang solo/duo
         entries = get(f"{REGION}/lol/league/v4/entries/by-puuid/{puuid}") or []
