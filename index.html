@@ -170,7 +170,7 @@ function loadLive(){
 function games(p){return p.w+p.l}
 function wr(p){return games(p) ? Math.round(p.w/games(p)*100) : 0}
 function fmt(s){var a=s.split("-");return a[2]+"/"+a[1]+"/"+a[0].slice(2)}
-function opgg(r){var a=r.split("#");return "https://www.op.gg/lol/summoners/euw/"+encodeURIComponent(a[0])+"-"+encodeURIComponent(a[1])}
+function opgg(r){var a=r.split("#");return "https://dpm.lol/"+encodeURIComponent(a[0])+"-"+encodeURIComponent(a[1])}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 
 document.getElementById("d1").textContent = fmt(START);
