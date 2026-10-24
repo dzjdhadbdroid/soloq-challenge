@@ -1,5 +1,5 @@
 {
- "updated": 1792856131,
+ "updated": 1792857855,
  "players": [
   {
    "name": "Kaori",
@@ -28,10 +28,11 @@
    "riot": "KING VON#DAMBG",
    "tier": "GRANDMASTER",
    "div": 1,
-   "lp": 1804,
-   "w": 556,
+   "lp": 1831,
+   "w": 557,
    "l": 497,
    "champs": [
+    "DrMundo",
     "Ambessa",
     "Garen",
     "Garen",
@@ -40,10 +41,9 @@
     "Garen",
     "Garen",
     "Ambessa",
-    "DrMundo",
-    "Garen"
+    "DrMundo"
    ],
-   "last10": "WWLWWWWWWL"
+   "last10": "WWWLWWWWWW"
   },
   {
    "name": "GuiltyConscience",
