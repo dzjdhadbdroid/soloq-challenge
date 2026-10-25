@@ -1,5 +1,5 @@
 {
- "updated": 1792969901,
+ "updated": 1792971508,
  "players": [
   {
    "name": "Kaori",
@@ -52,8 +52,9 @@
    "div": 1,
    "lp": 1477,
    "w": 334,
-   "l": 303,
+   "l": 304,
    "champs": [
+    "JarvanIV",
     "Chogath",
     "Viktor",
     "Graves",
@@ -62,10 +63,9 @@
     "Viktor",
     "Diana",
     "MonkeyKing",
-    "DrMundo",
-    "JarvanIV"
+    "DrMundo"
    ],
-   "last10": "LLLLWWLWWL"
+   "last10": "LLLLLWWLWW"
   },
   {
    "name": "Purple",
@@ -88,28 +88,6 @@
     "Ornn"
    ],
    "last10": "WWLLLLLLLL"
-  },
-  {
-   "name": "Bilou",
-   "riot": "Salif Keita#MALI",
-   "tier": "EMERALD",
-   "div": 3,
-   "lp": 40,
-   "w": 126,
-   "l": 111,
-   "champs": [
-    "Akali",
-    "Akali",
-    "Leblanc",
-    "Akali",
-    "Leblanc",
-    "Akali",
-    "Akali",
-    "Akali",
-    "Akali",
-    "Ahri"
-   ],
-   "last10": "LWWLLWWWLL"
   }
  ]
 }
