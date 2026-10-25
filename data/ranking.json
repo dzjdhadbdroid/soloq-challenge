@@ -1,5 +1,5 @@
 {
- "updated": 1792942556,
+ "updated": 1792944288,
  "players": [
   {
    "name": "Kaori",
@@ -72,11 +72,12 @@
    "riot": "PurpleBBear#EUW",
    "tier": "GOLD",
    "div": 4,
-   "lp": 78,
-   "w": 55,
+   "lp": 97,
+   "w": 56,
    "l": 53,
    "champs": [
     "Vex",
+    "Vex",
     "Tristana",
     "Vayne",
     "Tristana",
@@ -84,32 +85,31 @@
     "Vayne",
     "Tristana",
     "Tristana",
-    "Ornn",
-    "Vex"
+    "Ornn"
    ],
-   "last10": "WLLLLLLLLL"
+   "last10": "WWLLLLLLLL"
   },
   {
    "name": "Bilou",
    "riot": "Salif Keita#MALI",
    "tier": "EMERALD",
    "div": 3,
-   "lp": 60,
+   "lp": 40,
    "w": 126,
-   "l": 110,
+   "l": 111,
    "champs": [
     "Akali",
-    "Leblanc",
     "Akali",
     "Leblanc",
     "Akali",
+    "Leblanc",
     "Akali",
     "Akali",
     "Akali",
-    "Ahri",
-    "Leblanc"
+    "Akali",
+    "Ahri"
    ],
-   "last10": "WWLLWWWLLL"
+   "last10": "LWWLLWWWLL"
   }
  ]
 }
