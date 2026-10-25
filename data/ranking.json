@@ -1,15 +1,16 @@
 {
- "updated": 1792922786,
+ "updated": 1792924524,
  "players": [
   {
    "name": "Kaori",
    "riot": "Kaori#EUW33",
    "tier": "CHALLENGER",
    "div": 1,
-   "lp": 4531,
+   "lp": 4496,
    "w": 827,
-   "l": 683,
+   "l": 684,
    "champs": [
+    "Zeri",
     "Lucian",
     "Sivir",
     "Renata",
@@ -18,10 +19,9 @@
     "Tristana",
     "Varus",
     "Viktor",
-    "Xayah",
-    "Viktor"
+    "Xayah"
    ],
-   "last10": "WWWWWLWLWL"
+   "last10": "LWWWWWLWLW"
   },
   {
    "name": "KING VON",
