@@ -1,5 +1,5 @@
 {
- "updated": 1792940785,
+ "updated": 1792941350,
  "players": [
   {
    "name": "Kaori",
@@ -94,10 +94,11 @@
    "riot": "Salif Keita#MALI",
    "tier": "EMERALD",
    "div": 3,
-   "lp": 40,
-   "w": 125,
+   "lp": 60,
+   "w": 126,
    "l": 110,
    "champs": [
+    "Akali",
     "Leblanc",
     "Akali",
     "Leblanc",
@@ -106,10 +107,9 @@
     "Akali",
     "Akali",
     "Ahri",
-    "Leblanc",
-    "Akali"
+    "Leblanc"
    ],
-   "last10": "WLLWWWLLLL"
+   "last10": "WWLLWWWLLL"
   }
  ]
 }
