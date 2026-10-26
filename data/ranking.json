@@ -1,5 +1,5 @@
 {
- "updated": 1793050785,
+ "updated": 1793051479,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -27,7 +27,7 @@
    ],
    "last10": "WWLLLLLLLL",
    "unranked": false,
-   "avatar": null
+   "avatar": "avatars/PURPLE.png?v=a642aa84"
   },
   {
    "name": "Kuro",
@@ -50,7 +50,7 @@
    ],
    "last10": "LLWLLWLLW",
    "unranked": false,
-   "avatar": null
+   "avatar": "avatars/KURO.png?v=8078ca45"
   },
   {
    "name": "Flo",
@@ -73,7 +73,7 @@
    ],
    "last10": "WLLWLLLWL",
    "unranked": false,
-   "avatar": null
+   "avatar": "avatars/FLO.png?v=3bc65547"
   },
   {
    "name": "Bilou",
@@ -96,7 +96,7 @@
    ],
    "last10": "LWWLLWWLL",
    "unranked": false,
-   "avatar": null
+   "avatar": "avatars/BILOU.png?v=efe70524"
   }
  ]
 }
