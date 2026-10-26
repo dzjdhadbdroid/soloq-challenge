@@ -1,11 +1,7 @@
 {
- "updated": 1793005635,
+ "updated": 1793006549,
  "key_ok": true,
  "errors": [
-  {
-   "riot": "NotKurogirry#LUI",
-   "msg": "compte introuvable, vérifie le pseudo et le tag"
-  },
   {
    "riot": "Salif Keita#MALI",
    "msg": "compte introuvable, vérifie le pseudo et le tag"
@@ -102,6 +98,29 @@
     "Ornn"
    ],
    "last10": "WWLLLLLLLL",
+   "unranked": false
+  },
+  {
+   "name": "Kuro",
+   "riot": "NotKuroGiryy#LUI",
+   "tier": "PLATINUM",
+   "div": 4,
+   "lp": 75,
+   "w": 269,
+   "l": 274,
+   "champs": [
+    "Rumble",
+    "Gnar",
+    "Gnar",
+    "Gnar",
+    "Gnar",
+    "Gnar",
+    "Gragas",
+    "Gnar",
+    "Gnar",
+    "Gnar"
+   ],
+   "last10": "LLWLLWLLWW",
    "unranked": false
   }
  ]
