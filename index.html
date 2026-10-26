@@ -64,6 +64,9 @@ svg.chart{width:100%;height:auto;display:block;touch-action:none;user-select:non
 .up{color:#4ade80}.dn{color:var(--loss)}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 @media(max-width:640px){.hero h1{font-size:26px}header{padding:12px 14px}}
+.pw{display:flex;align-items:center;gap:12px}
+.pav{position:relative;overflow:hidden;width:44px;height:44px;border-radius:50%;flex:none;display:inline-grid;place-items:center;font-weight:800;font-size:17px;color:#fff;background:hsl(var(--h) 55% 36%);border:2px solid hsl(var(--h) 55% 52%)}
+.pav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 </style>
 </head>
 <body>
@@ -199,6 +202,11 @@ function games(p){return p.w+p.l}
 function wr(p){return games(p) ? Math.round(p.w/games(p)*100) : 0}
 function fmt(s){var a=s.split("-");return a[2]+"/"+a[1]+"/"+a[0].slice(2)}
 function opgg(r){var a=r.split("#");return "https://dpm.lol/"+encodeURIComponent(a[0])+"-"+encodeURIComponent(a[1])}
+function hue(s){var h=0;s=String(s);for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+function avHtml(p){
+  return '<span class="pav" style="--h:'+hue(p.name)+'">'+esc(String(p.name).slice(0,1).toUpperCase())
+    + (p.avatar ? '<img alt="" loading="lazy" src="'+esc(p.avatar)+'" onerror="this.remove()">' : '') + '</span>';
+}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 
 function setDates(){
@@ -230,7 +238,7 @@ function render(){
     }
     if(!last) last='<span style="color:var(--mut)">—</span>';
     html += '<tr class="clk" tabindex="0" data-riot="'+esc(p.riot)+'"><td class="rk">'+(i+1)+'</td>'
-      + '<td class="pl"><b>'+esc(p.name)+liveTag(p)+'</b><a href="'+opgg(p.riot)+'" target="_blank" rel="noopener">'+esc(p.riot)+'</a></td>'
+      + '<td class="pl"><div class="pw">'+avHtml(p)+'<div><b>'+esc(p.name)+liveTag(p)+'</b><a href="'+opgg(p.riot)+'" target="_blank" rel="noopener">'+esc(p.riot)+'</a></div></div></td>'
       + '<td><div class="elo">'+emblem(p,hi)
       + '<div class="lp">'+rankTxt+'<small>'+(p.unranked?"—":p.lp+" LP")+'</small></div></div></td>'
       + '<td>'+games(p)+'</td><td class="v">'+p.w+'</td><td class="d">'+p.l+'</td>'
@@ -311,7 +319,7 @@ function openPlayer(riot){
   var p = PLAYERS.filter(function(x){return x.riot === riot})[0]; if(!p) return;
   var pts = (HIST[riot] || []).slice().sort(function(a,b){return a[0]-b[0]});
   var hi = TIERS.indexOf(p.tier) >= 7, color = COL[p.tier] || "#f5c542";
-  document.getElementById("mem").innerHTML = emblem(p,hi);
+  document.getElementById("mem").innerHTML = '<div class="pw">'+avHtml(p)+emblem(p,hi)+'</div>';
   document.getElementById("mt").textContent = p.name;
   document.getElementById("ms").textContent = p.riot + (p.unranked ? " · non classé" : " · " + LBL[p.tier] + (hi ? "" : " " + ROM[p.div]) + " · " + p.lp + " LP");
   var sum = "", chart = "", note = "";

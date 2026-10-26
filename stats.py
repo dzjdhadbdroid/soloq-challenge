@@ -94,7 +94,7 @@ def build_stats(games, players, start_ts, now):
             lambda s: f'sur {s["max_kills"]["champ"]}'),
         rec("best_kda", enough, lambda s: s["kda"], "Meilleur KDA",
             lambda s: f'{s["avg_kills"]} / {s["avg_deaths"]} / {s["avg_assists"]} en moyenne'),
-    ) if r]
+    ) if r and not (r["key"] in ("loss_streak", "death_record") and r["value"] == 0)]
 
     # ---- vis-à-vis ----
     pairs = {}

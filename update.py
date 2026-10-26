@@ -8,7 +8,7 @@ Pour chaque joueur de players.json :
   - statistiques, records et vis-à-vis calculés à partir des parties  -> data/stats.json
 Lancé automatiquement par GitHub Actions (voir .github/workflows/update.yml).
 """
-import json, os, time, requests
+import hashlib, json, os, re, time, unicodedata, requests
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -74,11 +74,53 @@ def read_players():
         if riot.lower() in seen:
             continue
         seen.add(riot.lower())
-        out.append({"name": str(p.get("name") or riot.split("#")[0]), "riot": riot})
+        out.append({"name": str(p.get("name") or riot.split("#")[0]), "riot": riot, "avatar_cfg": p.get("avatar")})
     return out[:20]
 
 
 players = read_players()
+
+
+# ---------- photos de profil (dossier avatars/) ----------
+AVATAR_EXT = ("png", "jpg", "jpeg", "webp", "gif")
+MAX_AVATAR = 1_000_000   # au-delà, la page deviendrait lourde
+
+
+def slug(t):
+    t = unicodedata.normalize("NFKD", str(t)).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]", "", t.lower())
+
+
+AV_FILES = {}
+if Path("avatars").is_dir():
+    for f in sorted(Path("avatars").iterdir()):
+        if f.is_file() and f.suffix.lower().lstrip(".") in AVATAR_EXT:
+            AV_FILES.setdefault(slug(f.stem), f)
+
+
+def avatar_for(p):
+    """Photo de 'avatars/' dont le nom correspond au prénom du joueur (ex. avatars/kuro.png),
+    ou le fichier indiqué par "avatar" dans players.json."""
+    f = None
+    cfg = p.get("avatar_cfg")
+    if cfg:
+        c = Path(str(cfg))
+        if not c.is_absolute() and ".." not in c.parts and c.is_file():
+            f = c
+        else:
+            errors.append({"riot": p["riot"], "msg": f"photo introuvable : {cfg}"})
+    if f is None:
+        f = AV_FILES.get(slug(p["name"])) or AV_FILES.get(slug(p["riot"].split("#")[0]))
+    if f is None:
+        return None
+    size = f.stat().st_size
+    if size > MAX_AVATAR:
+        errors.append({"riot": p["riot"], "msg": f"photo trop lourde ({size / 1e6:.1f} Mo) : réduis-la sous 1 Mo"})
+        return None
+    return f"{f.as_posix()}?v={hashlib.md5(f.read_bytes()).hexdigest()[:8]}"
+
+
+av_map = {p["riot"]: avatar_for(p) for p in players}
 games = load(D / "games.json", {})        # matchId -> partie (voir stats.py)
 history = load(D / "history.json", {})    # joueur -> [[t, tier, div, lp], ...]
 old = {p["riot"]: p for p in load(D / "ranking.json", {}).get("players", [])}
@@ -213,10 +255,15 @@ for mid in [m for m, g in games.items() if g["t"] < START_TS and m not in keep]:
 
 save("games.json", games, separators=(",", ":"))
 save("history.json", history, separators=(",", ":"))
-save("stats.json", build_stats(games, players, START_TS, now), separators=(",", ":"))
+stats = build_stats(games, players, START_TS, now)
+for riot_, pl_ in stats["players"].items():
+    pl_["avatar"] = av_map.get(riot_)
+save("stats.json", stats, separators=(",", ":"))
 
 # Le classement reflète toujours players.json (ajouts ET retraits).
 # Seule exception : si tout a échoué on garde l'ancien fichier plutôt que d'afficher un site vide.
+for riot_, r_ in result.items():
+    r_["avatar"] = av_map.get(riot_)
 ordered = [result[p["riot"]] for p in players if p["riot"] in result]
 if ordered or not players:
     prev_updated = load(D / "ranking.json", {}).get("updated", 0)

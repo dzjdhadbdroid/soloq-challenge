@@ -34,7 +34,8 @@ h2{display:flex;align-items:center;gap:10px;font-size:20px;margin:26px 0 4px;scr
 h2:before{content:"";width:4px;height:20px;border-radius:3px;background:var(--gold)}
 .sub{color:var(--mut);font-size:13px;margin:0 0 14px}
 
-.av{width:28px;height:28px;border-radius:50%;background:hsl(var(--h) 55% 36%);border:1px solid hsl(var(--h) 55% 52%);display:inline-grid;place-items:center;font-weight:800;font-size:13px;flex:none;color:#fff}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.av{position:relative;overflow:hidden;width:28px;height:28px;border-radius:50%;background:hsl(var(--h) 55% 36%);border:1px solid hsl(var(--h) 55% 52%);display:inline-grid;place-items:center;font-weight:800;font-size:13px;flex:none;color:#fff}
 
 /* records */
 .recs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -149,7 +150,8 @@ var STATS = null, DD = {ver:null, map:null};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,"")}
 function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
-function av(name){return '<span class="av" style="--h:'+hue(name)+'">'+esc(String(name).slice(0,1).toUpperCase())+'</span>'}
+function av(name, photo){return '<span class="av" style="--h:'+hue(name)+'">'+esc(String(name).slice(0,1).toUpperCase())+(photo?'<img alt="" loading="lazy" src="'+esc(photo)+'" onerror="this.remove()">':'')+'</span>'}
+function pav(riot){var q = STATS && STATS.players && STATS.players[riot]; return q ? q.avatar : null}
 function icon(c){
   var inner = esc(String(c).slice(0,3));
   if(DD.map){
@@ -204,12 +206,12 @@ function render(){
     return '<article class="rec'+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
       + '<div class="lab">'+esc(r.label)+'</div>'
       + '<div class="val">'+esc(v)+'<small>'+esc(UNIT[r.key]||"")+'</small></div>'
-      + '<div class="who">'+av(r.name)+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div></article>';
+      + '<div class="who">'+av(r.name,pav(r.riot))+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div></article>';
   }).join("") : '<div class="empty" style="grid-column:1/-1">Les records apparaîtront dès les premières parties classées.</div>';
 
   // joueurs : tableau (ordinateur)
   document.getElementById("rows").innerHTML = list.length ? list.map(function(p){
-    return '<tr><td class="n"><div class="nn">'+av(p.name)+'<div><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></div></div></td><td>'+p.games+'</td>'
+    return '<tr><td class="n"><div class="nn">'+av(p.name,p.avatar)+'<div><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></div></div></td><td>'+p.games+'</td>'
       + '<td><span class="v">'+p.wins+'</span> – <span class="d">'+p.losses+'</span></td>'
       + '<td class="wr"><b>'+p.winrate+'%</b><div class="mb"><i style="width:'+p.winrate+'%"></i></div></td>'
       + '<td><span class="kda '+kdaCls(p.kda)+'">'+Number(p.kda).toFixed(2)+'</span><span class="sm">'+p.avg_kills+' / '+p.avg_deaths+' / '+p.avg_assists+'</span></td>'
@@ -219,7 +221,7 @@ function render(){
 
   // joueurs : cartes (téléphone)
   document.getElementById("pcards").innerHTML = list.map(function(p){
-    return '<div class="pc"><div class="top">'+av(p.name)+'<div class="nm"><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></div><div class="big">'+p.winrate+'%</div></div>'
+    return '<div class="pc"><div class="top">'+av(p.name,p.avatar)+'<div class="nm"><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></div><div class="big">'+p.winrate+'%</div></div>'
       + '<div class="grid"><div>'+p.games+'<small>parties</small></div><div><span class="v">'+p.wins+'</span>–<span class="d">'+p.losses+'</span><small>V – D</small></div>'
       + '<div><span class="kda '+kdaCls(p.kda)+'">'+Number(p.kda).toFixed(2)+'</span><small>KDA</small></div><div>'+p.avg_deaths+'<small>morts/partie</small></div></div>'
       + '<div class="foot">'+streakPill(p.streak)+'<div class="cc">'+champs(p,3)+'</div></div></div>';
@@ -235,14 +237,14 @@ function render(){
   var pairs = (s.pairs||[]).filter(function(p){return !cur || p.a === cur || p.b === cur});
   document.getElementById("pairs").innerHTML = pairs.length ? pairs.map(function(p){
     var ag = p.against, tg = p.together;
-    var a = p.a_name, b = p.b_name, aw = ag.a_wins, bw = ag.b_wins;
-    if(cur && p.b === cur){ a = p.b_name; b = p.a_name; aw = ag.b_wins; bw = ag.a_wins; }
+    var a = p.a_name, b = p.b_name, aw = ag.a_wins, bw = ag.b_wins, ra = p.a, rb = p.b;
+    if(cur && p.b === cur){ a = p.b_name; b = p.a_name; aw = ag.b_wins; bw = ag.a_wins; ra = p.b; rb = p.a; }
     var lead = aw > bw ? 1 : bw > aw ? 2 : 0;
     var tw = tg.games ? Math.round(100*tg.wins/tg.games) : 0;
     return '<div class="pair"><div class="duel">'
-      + '<div class="side'+(lead===1?" lead":"")+'">'+av(a)+'<span>'+esc(a)+'</span><em>'+(lead===1?"👑 devant":"")+'</em></div>'
+      + '<div class="side'+(lead===1?" lead":"")+'">'+av(a,pav(ra))+'<span>'+esc(a)+'</span><em>'+(lead===1?"👑 devant":"")+'</em></div>'
       + '<div class="score">'+(ag.games ? '<span class="v">'+aw+'</span> – <span class="d">'+bw+'</span><small>'+ag.games+' partie'+(ag.games>1?"s":"")+' en face</small>' : '<span style="color:var(--mut)">VS</span><small>jamais en face</small>')+'</div>'
-      + '<div class="side'+(lead===2?" lead":"")+'">'+av(b)+'<span>'+esc(b)+'</span><em>'+(lead===2?"👑 devant":"")+'</em></div></div>'
+      + '<div class="side'+(lead===2?" lead":"")+'">'+av(b,pav(rb))+'<span>'+esc(b)+'</span><em>'+(lead===2?"👑 devant":"")+'</em></div></div>'
       + (ag.games ? '<div class="split"><i style="width:'+Math.round(100*aw/Math.max(1,aw+bw))+'%"></i></div>' : '<div style="height:14px"></div>')
       + '<div class="tg"><span>Dans la même équipe</span>'
       + (tg.games ? '<span><b>'+tg.games+'</b> partie'+(tg.games>1?"s":"")+' · <span class="v">'+tg.wins+' V</span> · <span class="d">'+(tg.games-tg.wins)+' D</span> ('+tw+'%)</span>' : '<span>jamais</span>')
