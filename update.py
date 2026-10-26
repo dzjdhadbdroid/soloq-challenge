@@ -29,7 +29,7 @@ def get(url, **params):
             return None
         r.raise_for_status()
         return r.json()
-    return None
+    raise RuntimeError("trop de requêtes (429) : réessai au prochain passage")
 
 
 def load(path, default):
@@ -37,25 +37,49 @@ def load(path, default):
 
 
 # players.json : [{"name": "Kaori", "riot": "Kaori#EUW33"}, ...]
-players = json.loads(Path("players.json").read_text(encoding="utf-8"))[:20]
-puuids = load(D / "puuids.json", {})      # "Nom#TAG" -> puuid (mis en cache)
-matches = load(D / "matches.json", {})    # matchId -> infos déjà téléchargées
+errors = []   # problèmes affichés sur le site
 
-result = []
+
+def read_players():
+    try:
+        data = json.loads(Path("players.json").read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        raise SystemExit(f"ERREUR dans players.json (ligne {e.lineno}) : {e.msg}. "
+                         "Vérifie qu'il y a une virgule à la fin de chaque ligne sauf la dernière.")
+    out, seen = [], set()
+    for n, p in enumerate(data, 1):
+        riot = str(p.get("riot", "")).strip() if isinstance(p, dict) else ""
+        if "#" not in riot:
+            errors.append({"riot": riot or f"joueur n°{n}", "msg": "il manque le #tag (format Pseudo#TAG)"})
+            continue
+        if riot.lower() in seen:
+            continue
+        seen.add(riot.lower())
+        out.append({"name": str(p.get("name") or riot.split("#")[0]), "riot": riot})
+    return out[:20]
+
+
+players = read_players()
+matches = load(D / "matches.json", {})    # matchId -> infos déjà téléchargées
+old = {p["riot"]: p for p in load(D / "ranking.json", {}).get("players", [])}
+
+result, fresh, key_ok = [], 0, True
 for p in players:
     riot = p["riot"]
     try:
-       # 1. PUUID (toujours recalculé avec la clé actuelle)
+        # 1. PUUID (toujours recalculé : il dépend de la clé API)
         name, tag = riot.rsplit("#", 1)
         acc = get(f"{ROUTING}/riot/account/v1/accounts/by-riot-id/{name}/{tag}")
         if not acc:
             print(f"! compte introuvable : {riot}")
+            errors.append({"riot": riot, "msg": "compte introuvable, vérifie le pseudo et le tag"})
             continue
         puuid = acc["puuid"]
 
         # 2. Rang solo/duo
         entries = get(f"{REGION}/lol/league/v4/entries/by-puuid/{puuid}") or []
         solo = next((e for e in entries if e["queueType"] == "RANKED_SOLO_5x5"), None)
+        unranked = solo is None
         if solo:
             tier = solo["tier"]
             div = 1 if tier in ("MASTER", "GRANDMASTER", "CHALLENGER") else ROMAN[solo["rank"]]
@@ -80,18 +104,30 @@ for p in players:
                 last10 += "W" if me["win"] else "L"
 
         result.append({"name": p["name"], "riot": riot, "tier": tier, "div": div,
-                       "lp": lp, "w": w, "l": l, "champs": champs, "last10": last10})
+                       "lp": lp, "w": w, "l": l, "champs": champs, "last10": last10,
+                       "unranked": unranked})
+        fresh += 1
         print(f"ok {riot} : {tier} {div} {lp} LP")
     except Exception as e:
         print(f"! erreur sur {riot} : {e}")
+        code = getattr(getattr(e, "response", None), "status_code", None)
+        if code in (401, 403):
+            key_ok = False
+        if riot in old:   # erreur passagère : on garde la dernière valeur connue
+            result.append({**old[riot], "name": p["name"]})
+        else:
+            errors.append({"riot": riot, "msg": "données indisponibles pour l'instant, réessai au prochain passage"})
 
 # On ne garde en cache que les 200 derniers matchs (le fichier reste léger)
 for mid in list(matches)[:-200]:
     del matches[mid]
-
-(D / "puuids.json").write_text(json.dumps(puuids, indent=1), encoding="utf-8")
 (D / "matches.json").write_text(json.dumps(matches), encoding="utf-8")
-if result:  # n'écrase jamais le classement si tout a échoué
-    (D / "ranking.json").write_text(
-        json.dumps({"updated": int(time.time()), "players": result}, indent=1, ensure_ascii=False),
-        encoding="utf-8")
+
+# Le classement reflète toujours players.json (ajouts ET retraits).
+# Seule exception : si tout a échoué on garde l'ancien fichier plutôt que d'afficher un site vide.
+if result or not players:
+    prev_updated = load(D / "ranking.json", {}).get("updated", 0)
+    (D / "ranking.json").write_text(json.dumps(
+        {"updated": int(time.time()) if fresh else prev_updated,
+         "key_ok": key_ok, "errors": errors, "players": result},
+        indent=1, ensure_ascii=False), encoding="utf-8")

@@ -3,6 +3,9 @@ name: update-ranking
 on:
   schedule:
     - cron: "*/5 * * * *"   # toutes les 20 minutes
+  push:                      # dès que players.json change, mise à jour immédiate
+    branches: [main]
+    paths: ["players.json"]
   workflow_dispatch:          # bouton "Run workflow" pour lancer à la main
 
 permissions:

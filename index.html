@@ -23,6 +23,7 @@ nav a.on,nav a:hover{background:var(--card);color:var(--txt)}
 .bar input{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 14px;font-size:14px}
 .bar select{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px}
 .note{background:#2a2410;border:1px solid #5b4a14;color:#f1d98a;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px}
+.warn{background:#2a1416;border:1px solid #6b2328;color:#ffb4b8;border-radius:8px;padding:10px 14px;font-size:14px;margin-bottom:14px}
 .scroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:820px}
 th{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;text-align:left;padding:8px 10px}
@@ -62,7 +63,8 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 </div>
 
 <div class="wrap">
-  <div class="note">Stats réelles OP.GG relevées le 22/10/2026 pour Kaori, KING VON et GuiltyConscience. PurpleBBear est un exemple. Les 10 dernières parties ne sont pas encore récupérées.</div>
+  <div class="note">Chargement du classement…</div>
+  <div class="warn" id="warn" hidden></div>
   <div class="bar">
     <input id="q" placeholder="Rechercher un joueur…">
     <select id="sort">
@@ -87,16 +89,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 var START = "2026-10-22", END = "2026-11-22";
 // last10 : "W" victoire / "L" défaite, de la plus récente à la plus ancienne
 // champs : champions joués, dans le même ordre
-var PLAYERS = [  // secours si data/ranking.json est introuvable
-  // Stats réelles OP.GG (solo/duo) relevées le 22/10/2026
-  {name:"Kaori", riot:"Kaori#EUW33", tier:"CHALLENGER", div:1, lp:4531, w:827, l:683, champs:[], last10:""},
-  {name:"KING VON", riot:"KING VON#DAMBG", tier:"GRANDMASTER", div:1, lp:1804, w:556, l:497, champs:[], last10:""},
-  {name:"GuiltyConscience", riot:"GuiltyConscience#JRZ", tier:"GRANDMASTER", div:1, lp:1651, w:326, l:291, champs:[], last10:""},
-  // Exemple (pas de lien OP.GG fourni)
-  {name:"PurpleBBear (exemple)", riot:"PurpleBBear#EUW", tier:"GOLD", div:4, lp:35, w:12, l:9,
-   champs:["Vex","Tristana","Vex","Vex","Ahri","Vex","Tristana","Vex","Syndra","Vex"],
-   last10:"WWLWLWWLWW"}
-];
+var PLAYERS = [];  // rempli depuis data/ranking.json
 // Icônes de champions (image en base64). Ajoute une ligne par champion : Nom:"data:image/png;base64,..."
 var ICONS = {};
 // ====== FIN CONFIG ======
@@ -128,15 +121,20 @@ function loadDD(){
 }
 
 function loadData(){
-  render();
+  var n = document.querySelector(".note");
   fetch("data/ranking.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
-    if(d.players && d.players.length){
-      PLAYERS = d.players;
-      var n = document.querySelector(".note");
-      if(n){ n.textContent = "Données mises à jour automatiquement : " + new Date(d.updated*1000).toLocaleString("fr-FR") + " (solo/duo EUW)."; }
+    PLAYERS = d.players || [];
+    if(n){
+      var m = Math.max(0, Math.round((Date.now()/1000 - d.updated)/60));
+      n.textContent = "Actualisé " + (m < 1 ? "à l'instant" : m < 60 ? "il y a " + m + " min" : "le " + new Date(d.updated*1000).toLocaleString("fr-FR")) + " · classement solo/duo EUW";
     }
+    var msgs = [];
+    if(d.key_ok === false) msgs.push("La clé Riot est refusée (expirée ?) : le classement n'est plus mis à jour.");
+    (d.errors || []).forEach(function(e){ msgs.push(e.riot + " : " + e.msg); });
+    var w = document.getElementById("warn");
+    if(w){ w.innerHTML = msgs.map(esc).join("<br>"); w.hidden = !msgs.length; }
     render();
-  }).catch(function(){});
+  }).catch(function(){ if(n) n.textContent = "Impossible de charger le classement pour le moment."; render(); });
 }
 
 function score(p){
@@ -154,6 +152,7 @@ function embErr(img){
   else { img.parentNode.innerHTML = img.dataset.fb; }
 }
 function emblem(p,hi){
+  if(p.unranked) return '<div class="embw"><div class="badge" style="background:#475569">?</div></div>';
   var fb = '<div class="badge" style="background:'+COL[p.tier]+'">'+esc(p.tier.slice(0,1))+(hi?"":ROM[p.div])+'</div>';
   var u = embUrls(p.tier);
   return '<div class="embw"><img class="emb" alt="'+esc(p.tier)+'" src="'+u[0]+'" data-i="0" data-u="'+esc(JSON.stringify(u))+'" data-fb="'+esc(fb)+'" onerror="embErr(this)">'
@@ -193,7 +192,7 @@ function render(){
     if(q && (p.name+" "+p.riot).toLowerCase().indexOf(q) < 0) return;
     n++;
     var t = TIERS.indexOf(p.tier), hi = t >= 7;
-    var rankTxt = LBL[p.tier] + (hi ? "" : " " + ROM[p.div]);
+    var rankTxt = p.unranked ? "Non classé" : LBL[p.tier] + (hi ? "" : " " + ROM[p.div]);
     var last = "";
     for(var j=0;j<(p.champs&&p.champs.length?10:0);j++){
       var c = p.champs[j] || "?", r = p.last10[j] || "L";
@@ -203,7 +202,7 @@ function render(){
     html += '<tr><td class="rk">'+(i+1)+'</td>'
       + '<td class="pl"><b>'+esc(p.name)+liveTag(p)+'</b><a href="'+opgg(p.riot)+'" target="_blank" rel="noopener">'+esc(p.riot)+'</a></td>'
       + '<td><div class="elo">'+emblem(p,hi)
-      + '<div class="lp">'+rankTxt+'<small>'+p.lp+' LP</small></div></div></td>'
+      + '<div class="lp">'+rankTxt+'<small>'+(p.unranked?"—":p.lp+" LP")+'</small></div></div></td>'
       + '<td>'+games(p)+'</td><td class="v">'+p.w+'</td><td class="d">'+p.l+'</td>'
       + '<td class="wr">'+wr(p)+'%</td><td><div class="last">'+last+'</div></td></tr>';
   });

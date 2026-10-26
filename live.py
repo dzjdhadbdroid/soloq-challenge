@@ -3,7 +3,7 @@ Détecte qui est en partie (Spectator-V5) et écrit data/live.json.
 Pour chaque partie en cours : les 10 joueurs, leur champion, leurs sorts et leur rang solo/duo.
 Lancé toutes les 5 minutes par .github/workflows/live.yml
 """
-import json, os, time, requests
+import hashlib, json, os, time, requests
 from pathlib import Path
 
 KEY = os.environ["RIOT_API_KEY"]
@@ -39,9 +39,14 @@ def load(path, default):
         return default
 
 
-players = json.loads(Path("players.json").read_text(encoding="utf-8"))[:20]
-puuids = load(D / "puuids.json", {})
-rank_cache = load(D / "rank_cache.json", {})
+players = [p for p in json.loads(Path("players.json").read_text(encoding="utf-8"))
+           if isinstance(p, dict) and "#" in str(p.get("riot", ""))][:20]
+# Les PUUID dépendent de la clé API : si la clé change, on repart de zéro.
+KEYH = hashlib.sha256(KEY.encode()).hexdigest()[:10]
+_c = load(D / "puuids_live.json", {})
+same_key = _c.get("key") == KEYH
+puuids = _c.get("ids", {}) if same_key else {}
+rank_cache = load(D / "rank_cache.json", {}) if same_key else {}
 old = load(D / "live.json", {"games": {}, "players": {}})
 
 # 1. Qui est en partie ?
@@ -117,5 +122,7 @@ if new != {"games": old.get("games"), "players": old.get("players")}:
 else:
     print("rien de changé")
 
-(D / "puuids.json").write_text(json.dumps(puuids, indent=1), encoding="utf-8")
+current = {p["riot"] for p in players}
+(D / "puuids_live.json").write_text(json.dumps(
+    {"key": KEYH, "ids": {k: v for k, v in puuids.items() if k in current}}, indent=1), encoding="utf-8")
 (D / "rank_cache.json").write_text(json.dumps(rank_cache), encoding="utf-8")
