@@ -193,12 +193,13 @@ function render(){
   document.getElementById("tiles").innerHTML = list.length
     ? '<div class="tile"><small>Parties jouées</small><b>'+s.games+'</b><span>par '+list.length+' joueur'+(list.length>1?"s":"")+'</span></div>'
     + '<div class="tile"><small>Winrate du groupe</small><b>'+(G?Math.round(100*W/G):0)+'%</b><span>'+W+' V · '+(G-W)+' D</span></div>'
-    + '<div class="tile"><small>Morts au total</small><b>'+D+'</b><span>'+(G?(D/G).toFixed(1):0)+' par partie</span></div>'
+    + '<div class="tile"><small>Morts au total</small><b>'+Math.round(D)+'</b><span>'+(G?(D/G).toFixed(1):0)+' par partie</span></div>'
     + '<div class="tile"><small>Plus longue série</small><b>'+(bestS?bestS.best_win_streak+" V":"—")+'</b><span>'+(bestS?esc(bestS.name):"")+'</span></div>'
     : "";
 
   // records
-  document.getElementById("recs").innerHTML = (s.records||[]).length ? s.records.map(function(r){
+  var recs = (s.records||[]).slice().sort(function(x,y){return (y.key==="troll") - (x.key==="troll")});  // le troll du mois en premier : la grille reste pleine
+  document.getElementById("recs").innerHTML = recs.length ? recs.map(function(r){
     var v = r.key === "best_kda" ? Number(r.value).toFixed(2) : r.value;
     return '<article class="rec'+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
       + '<div class="lab">'+esc(r.label)+'</div>'
