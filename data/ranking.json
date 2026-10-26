@@ -1,5 +1,16 @@
 {
- "updated": 1793003107,
+ "updated": 1793004922,
+ "key_ok": true,
+ "errors": [
+  {
+   "riot": "NotKurogirry#LUI",
+   "msg": "compte introuvable, vérifie le pseudo et le tag"
+  },
+  {
+   "riot": "Salif Keita#MALI",
+   "msg": "compte introuvable, vérifie le pseudo et le tag"
+  }
+ ],
  "players": [
   {
    "name": "Kaori",
@@ -21,7 +32,8 @@
     "Varus",
     "Viktor"
    ],
-   "last10": "WLWWWWWLWL"
+   "last10": "WLWWWWWLWL",
+   "unranked": false
   },
   {
    "name": "KING VON",
@@ -43,7 +55,8 @@
     "Garen",
     "Garen"
    ],
-   "last10": "WLWWWLWWWW"
+   "last10": "WLWWWLWWWW",
+   "unranked": false
   },
   {
    "name": "GuiltyConscience",
@@ -65,7 +78,8 @@
     "Graves",
     "Shyvana"
    ],
-   "last10": "WWLWLLLLLL"
+   "last10": "WWLWLLLLLL",
+   "unranked": false
   },
   {
    "name": "Purple",
@@ -87,7 +101,8 @@
     "Tristana",
     "Ornn"
    ],
-   "last10": "WWLLLLLLLL"
+   "last10": "WWLLLLLLLL",
+   "unranked": false
   }
  ]
 }
