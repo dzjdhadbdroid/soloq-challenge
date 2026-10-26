@@ -5,6 +5,7 @@ Lancé toutes les 5 minutes par .github/workflows/live.yml
 """
 import hashlib, json, os, time, requests
 from pathlib import Path
+from roles import load_roles, assign_roles
 
 KEY = os.environ["RIOT_API_KEY"]
 H = {"X-Riot-Token": KEY}
@@ -93,6 +94,7 @@ def rank_of(puuid):
 
 # 2. Détails de chaque partie (une seule fois même si plusieurs potes y sont)
 games, by_player = {}, {}
+roles_data = None
 for riot, g in in_game.items():
     gid = str(g["gameId"])
     by_player[riot] = gid
@@ -110,12 +112,17 @@ for riot, g in in_game.items():
             "friend": friends.get(x["puuid"]),
             "rank": rank_of(x["puuid"]),
         })
+    # Postes : top, jungle, mid, bot, support (estimés), équipe bleue puis rouge
+    if roles_data is None:
+        roles_data = load_roles(D / "roles_cache.json")
+    parts = [p for team in (100, 200)
+             for p in assign_roles([x for x in parts if x["team"] == team], roles_data)]
     games[gid] = {"id": gid, "queue": g.get("gameQueueConfigId", 0),
                   "start": g.get("gameStartTime", 0), "players": parts}
 
-new = {"games": games, "players": by_player}
+new = {"v": 2, "games": games, "players": by_player}
 # On n'écrit que si quelque chose a changé (sinon GitHub se remplirait de commits inutiles)
-if new != {"games": old.get("games"), "players": old.get("players")}:
+if new != {"v": old.get("v"), "games": old.get("games"), "players": old.get("players")}:
     new["checked"] = int(time.time())
     (D / "live.json").write_text(json.dumps(new, ensure_ascii=False), encoding="utf-8")
     print("live.json mis à jour :", list(by_player) or "personne en partie")

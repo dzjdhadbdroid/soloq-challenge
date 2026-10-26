@@ -31,6 +31,7 @@ h1{margin:0 0 6px;font-size:26px}
 .sp div{width:28px;height:28px;border-radius:6px;background:#0b1220;overflow:hidden;display:grid;place-items:center;font-size:8px;color:var(--mut)}
 .sp img{width:100%;height:100%;display:block}
 .nm{font-weight:700;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.role{font-size:12px;font-weight:700;color:var(--mut);letter-spacing:.04em;border-bottom:1px solid var(--line);padding-bottom:6px;width:100%}
 .tag{font-size:10px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
 .rk{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);min-height:26px}
 .rk img{width:26px;height:26px;object-fit:contain}
@@ -79,10 +80,12 @@ function spellHtml(id){
   if(s && DD.ver) return '<img alt="'+esc(s.name)+'" title="'+esc(s.name)+'" src="https://ddragon.leagueoflegends.com/cdn/'+DD.ver+'/img/spell/'+s.id+'.png">';
   return "";
 }
+var ROLE_LBL = {TOP:"Top",JUNGLE:"Jungle",MIDDLE:"Mid",BOTTOM:"Bot",UTILITY:"Support"};
 function cardHtml(p){
   var c = DD.champs[p.champ];
   return '<div class="pc'+(p.friend?' me':'')+'">'
-    + (p.friend?'<div class="tag">'+esc(p.friend.split("#")[0])+'</div>':'')
+    + (p.role?'<div class="role">'+ROLE_LBL[p.role]+'</div>':'')
+    + '<div class="tag"'+(p.friend?'':' style="visibility:hidden"')+'>'+(p.friend?esc(p.friend.split("#")[0]):'.')+'</div>'
     + '<div class="pic"><div class="champ">'+champHtml(p.champ)+'</div>'
     + '<div class="sp"><div>'+spellHtml(p.spells[0])+'</div><div>'+spellHtml(p.spells[1])+'</div></div></div>'
     + '<div class="nm" title="'+esc(p.name)+'">'+esc(p.name.split("#")[0])+'</div>'
@@ -107,7 +110,7 @@ function render(){
   var blue = g.players.filter(function(p){return p.team===100}), red = g.players.filter(function(p){return p.team===200});
   var names = g.players.filter(function(p){return p.friend}).map(function(p){return p.friend.split("#")[0]});
   app.innerHTML = '<h1><span class="dot"></span>'+esc(names.join(" & "))+' en partie</h1>'
-    + '<p class="sub">'+(QUEUES[g.queue]||"Partie")+' · <span id="clock">'+clock(g)+'</span> · données actualisées toutes les ~5 min (la partie peut être déjà terminée)</p>'
+    + '<p class="sub">'+(QUEUES[g.queue]||"Partie")+' · <span id="clock">'+clock(g)+'</span> · données actualisées toutes les ~5 min (la partie peut être déjà terminée)'+(g.players.some(function(p){return p.role})?' · postes estimés, de gauche à droite : top, jungle, mid, bot, support':'')+'</p>'
     + '<div class="team b"><h2>Équipe bleue</h2><div class="row">'+blue.map(cardHtml).join("")+'</div></div>'
     + '<div class="team r"><h2>Équipe rouge</h2><div class="row">'+red.map(cardHtml).join("")+'</div></div>';
   clearInterval(timer);
