@@ -1,82 +1,8 @@
 {
- "updated": 1793018178,
+ "updated": 1793024720,
  "key_ok": true,
- "errors": [
-  {
-   "riot": "Salif Keita#mali",
-   "msg": "compte introuvable, vérifie le pseudo et le tag"
-  }
- ],
+ "errors": [],
  "players": [
-  {
-   "name": "Kaori",
-   "riot": "Kaori#EUW33",
-   "tier": "CHALLENGER",
-   "div": 1,
-   "lp": 4511,
-   "w": 829,
-   "l": 685,
-   "champs": [
-    "Yunara",
-    "Vayne",
-    "Kalista",
-    "Zeri",
-    "Lucian",
-    "Sivir",
-    "Renata",
-    "Zeri",
-    "Tristana",
-    "Tristana"
-   ],
-   "last10": "WLWLWWWWWL",
-   "unranked": false
-  },
-  {
-   "name": "KING VON",
-   "riot": "KING VON#DAMBG",
-   "tier": "GRANDMASTER",
-   "div": 1,
-   "lp": 1825,
-   "w": 558,
-   "l": 498,
-   "champs": [
-    "Garen",
-    "Bard",
-    "DrMundo",
-    "Ambessa",
-    "Garen",
-    "Garen",
-    "Garen",
-    "DrMundo",
-    "Garen",
-    "Garen"
-   ],
-   "last10": "WLWWWLWWWW",
-   "unranked": false
-  },
-  {
-   "name": "GuiltyConscience",
-   "riot": "GuiltyConscience#JRZ",
-   "tier": "MASTER",
-   "div": 1,
-   "lp": 1487,
-   "w": 337,
-   "l": 306,
-   "champs": [
-    "Shyvana",
-    "Shyvana",
-    "JarvanIV",
-    "JarvanIV",
-    "Khazix",
-    "JarvanIV",
-    "Chogath",
-    "Viktor",
-    "Graves",
-    "Shyvana"
-   ],
-   "last10": "WWLWLLLLLL",
-   "unranked": false
-  },
   {
    "name": "Purple",
    "riot": "PurpleBBear#EUW",
@@ -144,6 +70,29 @@
     "Tristana"
    ],
    "last10": "WLLWLLLWWL",
+   "unranked": false
+  },
+  {
+   "name": "Bilou",
+   "riot": "ounf ding#koich",
+   "tier": "EMERALD",
+   "div": 3,
+   "lp": 40,
+   "w": 126,
+   "l": 111,
+   "champs": [
+    "Akali",
+    "Akali",
+    "Leblanc",
+    "Akali",
+    "Leblanc",
+    "Akali",
+    "Akali",
+    "Akali",
+    "Akali",
+    "Ahri"
+   ],
+   "last10": "LWWLLWWWLL",
    "unranked": false
   }
  ]
