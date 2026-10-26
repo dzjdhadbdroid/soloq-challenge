@@ -1,5 +1,5 @@
 {
- "updated": 1793008159,
+ "updated": 1793008808,
  "key_ok": true,
  "errors": [
   {
@@ -13,10 +13,11 @@
    "riot": "Kaori#EUW33",
    "tier": "CHALLENGER",
    "div": 1,
-   "lp": 4521,
+   "lp": 4486,
    "w": 828,
-   "l": 684,
+   "l": 685,
    "champs": [
+    "Vayne",
     "Kalista",
     "Zeri",
     "Lucian",
@@ -25,10 +26,9 @@
     "Zeri",
     "Tristana",
     "Tristana",
-    "Varus",
-    "Viktor"
+    "Varus"
    ],
-   "last10": "WLWWWWWLWL",
+   "last10": "LWLWWWWWLW",
    "unranked": false
   },
   {
@@ -121,6 +121,29 @@
     "Gnar"
    ],
    "last10": "LLWLLWLLWW",
+   "unranked": false
+  },
+  {
+   "name": "Flo",
+   "riot": "Flozz176#176",
+   "tier": "IRON",
+   "div": 3,
+   "lp": 63,
+   "w": 16,
+   "l": 23,
+   "champs": [
+    "XinZhao",
+    "XinZhao",
+    "Nautilus",
+    "Nautilus",
+    "MasterYi",
+    "XinZhao",
+    "XinZhao",
+    "MasterYi",
+    "XinZhao",
+    "Tristana"
+   ],
+   "last10": "WLLWLLLWWL",
    "unranked": false
   }
  ]
