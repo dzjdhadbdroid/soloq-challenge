@@ -1,5 +1,5 @@
 {
- "updated": 1793049425,
+ "updated": 1793050785,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -26,7 +26,8 @@
     "Ornn"
    ],
    "last10": "WWLLLLLLLL",
-   "unranked": false
+   "unranked": false,
+   "avatar": null
   },
   {
    "name": "Kuro",
@@ -48,7 +49,8 @@
     "Gnar"
    ],
    "last10": "LLWLLWLLW",
-   "unranked": false
+   "unranked": false,
+   "avatar": null
   },
   {
    "name": "Flo",
@@ -70,7 +72,8 @@
     "Tristana"
    ],
    "last10": "WLLWLLLWL",
-   "unranked": false
+   "unranked": false,
+   "avatar": null
   },
   {
    "name": "Bilou",
@@ -92,7 +95,8 @@
     "Ahri"
    ],
    "last10": "LWWLLWWLL",
-   "unranked": false
+   "unranked": false,
+   "avatar": null
   }
  ]
 }
