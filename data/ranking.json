@@ -1,5 +1,5 @@
 {
- "updated": 1793010416,
+ "updated": 1793013001,
  "key_ok": true,
  "errors": [
   {
@@ -13,10 +13,11 @@
    "riot": "Kaori#EUW33",
    "tier": "CHALLENGER",
    "div": 1,
-   "lp": 4486,
-   "w": 828,
+   "lp": 4511,
+   "w": 829,
    "l": 685,
    "champs": [
+    "Yunara",
     "Vayne",
     "Kalista",
     "Zeri",
@@ -25,10 +26,9 @@
     "Renata",
     "Zeri",
     "Tristana",
-    "Tristana",
-    "Varus"
+    "Tristana"
    ],
-   "last10": "LWLWWWWWLW",
+   "last10": "WLWLWWWWWL",
    "unranked": false
   },
   {
