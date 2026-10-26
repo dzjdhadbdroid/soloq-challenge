@@ -1,5 +1,5 @@
 {
- "updated": 1792980837,
+ "updated": 1792983162,
  "players": [
   {
    "name": "Kaori",
@@ -50,10 +50,11 @@
    "riot": "GuiltyConscience#JRZ",
    "tier": "MASTER",
    "div": 1,
-   "lp": 1461,
-   "w": 336,
+   "lp": 1487,
+   "w": 337,
    "l": 306,
    "champs": [
+    "Shyvana",
     "Shyvana",
     "JarvanIV",
     "JarvanIV",
@@ -62,10 +63,9 @@
     "Chogath",
     "Viktor",
     "Graves",
-    "Shyvana",
-    "JarvanIV"
+    "Shyvana"
    ],
-   "last10": "WLWLLLLLLW"
+   "last10": "WWLWLLLLLL"
   },
   {
    "name": "Purple",
