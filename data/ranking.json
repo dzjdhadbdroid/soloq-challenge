@@ -1,6 +1,8 @@
 {
- "updated": 1793045410,
+ "updated": 1793047602,
  "key_ok": true,
+ "start": "2026-10-22",
+ "end": "2026-11-22",
  "errors": [],
  "players": [
   {
@@ -43,10 +45,9 @@
     "Gnar",
     "Gragas",
     "Gnar",
-    "Gnar",
     "Gnar"
    ],
-   "last10": "LLWLLWLLWW",
+   "last10": "LLWLLWLLW",
    "unranked": false
   },
   {
@@ -65,11 +66,10 @@
     "MasterYi",
     "XinZhao",
     "XinZhao",
-    "MasterYi",
     "XinZhao",
     "Tristana"
    ],
-   "last10": "WLLWLLLWWL",
+   "last10": "WLLWLLLWL",
    "unranked": false
   },
   {
@@ -89,10 +89,9 @@
     "Akali",
     "Akali",
     "Akali",
-    "Akali",
     "Ahri"
    ],
-   "last10": "LWWLLWWWLL",
+   "last10": "LWWLLWWLL",
    "unranked": false
   }
  ]
