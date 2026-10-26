@@ -1,0 +1,120 @@
+"""
+Calcule les statistiques du challenge à partir des parties enregistrées (data/games.json).
+
+Format d'une partie dans games.json :
+  {"t": fin de partie (secondes), "d": durée (s), "q": file (420 = solo/duo),
+   "p": [[joueur, équipe, victoire(0/1), champion, kills, morts, assists], ...]}
+Le "joueur" est l'identifiant Riot en minuscules (ex. "kaori#euw33").
+"""
+from collections import defaultdict
+from itertools import combinations
+
+MIN_GAMES = 5   # nombre minimum de parties pour les records "à la moyenne"
+
+
+def _streaks(results):
+    """results : liste de 1/0 (victoire/défaite) triée du plus ancien au plus récent."""
+    best_w = best_l = run = 0
+    last = None
+    for r in results:
+        run = run + 1 if r == last else 1
+        last = r
+        if r:
+            best_w = max(best_w, run)
+        else:
+            best_l = max(best_l, run)
+    current = 0
+    if results:
+        current = run if results[-1] else -run
+    return best_w, best_l, current
+
+
+def build_stats(games, players, start_ts, now):
+    """players : [{"name":..., "riot":...}]. Renvoie un dictionnaire prêt à être écrit en JSON."""
+    by_id = {p["riot"].lower(): p for p in players}
+    per = defaultdict(list)          # joueur -> [(t, win, champ, k, d, a, mid)]
+    team_games = []                  # parties avec au moins un ami
+    for mid, g in games.items():
+        if g.get("t", 0) < start_ts or g.get("r"):   # avant le challenge, ou remake
+            continue
+        friends = [x for x in g["p"] if x[0] in by_id]
+        if not friends:
+            continue
+        team_games.append((g, friends))
+        for pid, team, win, champ, k, d, a in friends:
+            per[pid].append((g["t"], win, champ, k, d, a, mid))
+
+    out_players = {}
+    for pid, rows in per.items():
+        rows.sort()
+        n = len(rows)
+        wins = sum(r[1] for r in rows)
+        k = sum(r[3] for r in rows); d = sum(r[4] for r in rows); a = sum(r[5] for r in rows)
+        best_w, best_l, cur = _streaks([r[1] for r in rows])
+        champs = defaultdict(lambda: [0, 0])
+        for r in rows:
+            champs[r[2]][0] += 1
+            champs[r[2]][1] += r[1]
+        top = sorted(champs.items(), key=lambda kv: (-kv[1][0], -kv[1][1], kv[0]))[:5]
+        most_deaths = max(rows, key=lambda r: (r[4], -r[0]))
+        most_kills = max(rows, key=lambda r: (r[3], -r[0]))
+        out_players[by_id[pid]["riot"]] = {
+            "name": by_id[pid]["name"], "games": n, "wins": wins, "losses": n - wins,
+            "winrate": round(100 * wins / n), "kda": round((k + a) / max(1, d), 2),
+            "avg_kills": round(k / n, 1), "avg_deaths": round(d / n, 1), "avg_assists": round(a / n, 1),
+            "deaths": d, "best_win_streak": best_w, "best_loss_streak": best_l, "streak": cur,
+            "champs": [{"champ": c, "games": v[0], "wins": v[1]} for c, v in top],
+            "max_deaths": {"v": most_deaths[4], "champ": most_deaths[2], "t": most_deaths[0]},
+            "max_kills": {"v": most_kills[3], "champ": most_kills[2], "t": most_kills[0]},
+        }
+
+    # ---- records ----
+    def rec(key, items, value, label, detail=None, reverse=True):
+        items = [(riot, s) for riot, s in items if value(s) is not None]
+        if not items:
+            return None
+        riot, s = (max if reverse else min)(items, key=lambda it: (value(it[1]), -ord(it[0][0])))
+        return {"key": key, "label": label, "riot": riot, "name": s["name"],
+                "value": value(s), "detail": detail(s) if detail else ""}
+
+    allp = list(out_players.items())
+    enough = [it for it in allp if it[1]["games"] >= MIN_GAMES] or allp
+    records = [r for r in (
+        rec("win_streak", allp, lambda s: s["best_win_streak"], "Plus longue série de victoires",
+            lambda s: f'{s["games"]} parties jouées'),
+        rec("loss_streak", allp, lambda s: s["best_loss_streak"], "Plus longue série de défaites",
+            lambda s: f'{s["games"]} parties jouées'),
+        rec("most_games", allp, lambda s: s["games"], "Le plus de parties jouées",
+            lambda s: f'{s["wins"]} V · {s["losses"]} D'),
+        rec("troll", enough, lambda s: s["avg_deaths"], "Troll du mois : le plus de morts par partie",
+            lambda s: f'{s["deaths"]} morts en {s["games"]} parties'),
+        rec("death_record", allp, lambda s: s["max_deaths"]["v"], "Record de morts en une partie",
+            lambda s: f'sur {s["max_deaths"]["champ"]}'),
+        rec("kills_record", allp, lambda s: s["max_kills"]["v"], "Record de kills en une partie",
+            lambda s: f'sur {s["max_kills"]["champ"]}'),
+        rec("best_kda", enough, lambda s: s["kda"], "Meilleur KDA",
+            lambda s: f'{s["avg_kills"]} / {s["avg_deaths"]} / {s["avg_assists"]} en moyenne'),
+    ) if r]
+
+    # ---- vis-à-vis ----
+    pairs = {}
+    for g, friends in team_games:
+        for x, y in combinations(sorted(friends, key=lambda f: f[0]), 2):
+            key = (x[0], y[0])
+            p = pairs.setdefault(key, {"tg": 0, "tw": 0, "ag": 0, "aw": 0, "bw": 0})
+            if x[1] == y[1]:
+                p["tg"] += 1; p["tw"] += x[2]
+            else:
+                p["ag"] += 1; p["aw"] += x[2]; p["bw"] += y[2]
+    out_pairs = []
+    for (a, b), p in pairs.items():
+        out_pairs.append({
+            "a": by_id[a]["riot"], "b": by_id[b]["riot"],
+            "a_name": by_id[a]["name"], "b_name": by_id[b]["name"],
+            "together": {"games": p["tg"], "wins": p["tw"]},
+            "against": {"games": p["ag"], "a_wins": p["aw"], "b_wins": p["bw"]},
+        })
+    out_pairs.sort(key=lambda p: -(p["together"]["games"] + p["against"]["games"]))
+
+    return {"updated": int(now), "since": int(start_ts), "games": len(team_games),
+            "records": records, "players": out_players, "pairs": out_pairs}

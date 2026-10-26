@@ -47,6 +47,21 @@ tr:nth-child(1) .rk{color:var(--gold)}
 .ch{width:34px;height:34px;border-radius:7px;display:grid;place-items:center;font-size:10px;font-weight:700;background:#0b1220;border:3px solid var(--line);overflow:hidden}.ch img{width:100%;height:100%;object-fit:cover;display:block}
 .ch.w{border-color:var(--win);color:#9ec5ff}.ch.l{border-color:var(--loss);color:#ffa3a3}
 .empty{padding:30px;text-align:center;color:var(--mut)}
+.hint{color:var(--mut);font-size:13px;margin:0 0 8px}
+tbody tr.clk{cursor:pointer}tbody tr.clk:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.modal{position:fixed;inset:0;background:rgba(3,7,14,.74);display:grid;place-items:center;padding:16px;z-index:50}
+.modal[hidden]{display:none}
+.dlg{background:var(--card);border:1px solid var(--line);border-radius:14px;width:min(780px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px}
+.dh{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.dh h2{margin:0;font-size:21px}.dh small{display:block;color:var(--mut);font-size:13px;margin-top:2px}
+.x{margin-left:auto;align-self:flex-start;background:none;border:1px solid var(--line);color:var(--txt);border-radius:8px;width:36px;height:36px;font-size:20px;line-height:1;cursor:pointer}
+.x:hover{background:#1c2a3f}
+.sum{display:flex;gap:26px;flex-wrap:wrap;margin:10px 0 12px;font-size:13px;color:var(--mut)}
+.sum b{display:block;color:var(--txt);font-size:19px;margin-top:2px}
+.tip{min-height:20px;font-size:14px;color:var(--txt);margin-bottom:4px}
+svg.chart{width:100%;height:auto;display:block;touch-action:none;user-select:none}
+.note2{color:var(--mut);font-size:13px;margin:10px 0 0}
+.up{color:#4ade80}.dn{color:var(--loss)}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 @media(max-width:640px){.hero h1{font-size:26px}header{padding:12px 14px}}
 </style>
@@ -54,6 +69,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 <body>
 <header>
   <div class="logo">SoloQ<b>Challenge</b></div>
+  <nav><a class="on" href="index.html">Classement</a><a href="stats.html">Statistiques</a></nav>
 </header>
 
 <div class="hero">
@@ -74,6 +90,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
       <option value="wins">Victoires</option>
     </select>
   </div>
+  <p class="hint">Clique sur un joueur pour voir l'évolution de ses LP.</p>
   <div class="scroll">
   <table>
     <thead><tr><th>#</th><th>Joueur</th><th>Elo</th><th>Matchs</th><th>Victoires</th><th>Défaites</th><th>Winrate</th><th>10 dernières parties</th></tr></thead>
@@ -83,6 +100,17 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
   <div id="none" class="empty" hidden>Aucun joueur trouvé.</div>
 </div>
 
+
+<div class="modal" id="modal" hidden>
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="mt">
+    <div class="dh"><div id="mem"></div><div><h2 id="mt"></h2><small id="ms"></small></div>
+      <button class="x" id="mx" aria-label="Fermer">×</button></div>
+    <div class="sum" id="msum"></div>
+    <div id="mtip" class="tip">&nbsp;</div>
+    <div id="mchart"></div>
+    <p class="note2" id="mnote"></p>
+  </div>
+</div>
 
 <script>
 // ====== CONFIG ======
@@ -124,6 +152,7 @@ function loadData(){
   var n = document.querySelector(".note");
   fetch("data/ranking.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
     PLAYERS = d.players || [];
+    if(d.start && d.end && (d.start !== START || d.end !== END)){ START = d.start; END = d.end; setDates(); }
     if(n){
       var m = Math.max(0, Math.round((Date.now()/1000 - d.updated)/60));
       n.textContent = "Actualisé " + (m < 1 ? "à l'instant" : m < 60 ? "il y a " + m + " min" : "le " + new Date(d.updated*1000).toLocaleString("fr-FR")) + " · classement solo/duo EUW";
@@ -172,15 +201,16 @@ function fmt(s){var a=s.split("-");return a[2]+"/"+a[1]+"/"+a[0].slice(2)}
 function opgg(r){var a=r.split("#");return "https://dpm.lol/"+encodeURIComponent(a[0])+"-"+encodeURIComponent(a[1])}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 
-document.getElementById("d1").textContent = fmt(START);
-document.getElementById("d2").textContent = fmt(END);
-(function(){
-  var now = new Date(), s = new Date(START), e = new Date(END);
+function setDates(){
+  document.getElementById("d1").textContent = fmt(START);
+  document.getElementById("d2").textContent = fmt(END);
+  var now = new Date(), st = new Date(START), e = new Date(END);
   var el = document.getElementById("left");
-  if(now < s) el.textContent = "Commence dans " + Math.ceil((s-now)/864e5) + " j";
+  if(now < st) el.textContent = "Commence dans " + Math.ceil((st-now)/864e5) + " j";
   else if(now > e) el.textContent = "Challenge terminé";
   else el.textContent = Math.ceil((e-now)/864e5) + " j restants";
-})();
+}
+setDates();
 
 function render(){
   var q = document.getElementById("q").value.toLowerCase().trim();
@@ -199,7 +229,7 @@ function render(){
       last += '<div class="ch '+(r==="W"?"w":"l")+'" title="'+esc(c)+' · '+(r==="W"?"Victoire":"Défaite")+'">'+(iconSrc(c)?'<img alt="'+esc(c)+'" src="'+iconSrc(c)+'" onerror="this.replaceWith(document.createTextNode(this.alt.slice(0,3)))">':esc(c.slice(0,3)))+'</div>';
     }
     if(!last) last='<span style="color:var(--mut)">—</span>';
-    html += '<tr><td class="rk">'+(i+1)+'</td>'
+    html += '<tr class="clk" tabindex="0" data-riot="'+esc(p.riot)+'"><td class="rk">'+(i+1)+'</td>'
       + '<td class="pl"><b>'+esc(p.name)+liveTag(p)+'</b><a href="'+opgg(p.riot)+'" target="_blank" rel="noopener">'+esc(p.riot)+'</a></td>'
       + '<td><div class="elo">'+emblem(p,hi)
       + '<div class="lp">'+rankTxt+'<small>'+(p.unranked?"—":p.lp+" LP")+'</small></div></div></td>'
@@ -209,9 +239,127 @@ function render(){
   document.getElementById("rows").innerHTML = html;
   document.getElementById("none").hidden = n > 0;
 }
+
+// ====== Graphique d'évolution des LP ======
+var HIST = {}, STATS = null, lastFocus = null;
+function loadExtra(){
+  fetch("data/history.json?t="+Date.now()).then(function(r){return r.ok?r.json():{}}).then(function(d){HIST=d}).catch(function(){});
+  fetch("data/stats.json?t="+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(d){STATS=d}).catch(function(){});
+}
+function cscore(t){var i=TIERS.indexOf(t[1]);return i>=7 ? 2800+t[3] : i*400+(4-t[2])*100+t[3]}
+function scoreLabel(v){
+  if(v>=2800) return v===2800 ? "Maître" : "M+ "+(v-2800)+" LP";
+  var i=Math.floor(v/400), d=4-Math.floor((v%400)/100);
+  return LBL[TIERS[i]]+" "+ROM[d];
+}
+function rankText(t){
+  var hi = TIERS.indexOf(t[1]) >= 7;
+  return LBL[t[1]] + (hi ? "" : " " + ROM[t[2]]) + " · " + t[3] + " LP";
+}
+function two(n){return (n<10?"0":"")+n}
+function fmtT(sec, withHour){
+  var d = new Date(sec*1000);
+  return two(d.getDate())+"/"+two(d.getMonth()+1) + (withHour ? " "+two(d.getHours())+":"+two(d.getMinutes()) : "");
+}
+function delta(n){return (n>0?"+":n<0?"−":"")+Math.abs(n)}
+function chartSvg(pts, color){
+  var W=720,H=300,L=84,R=16,T=14,B=30, now=Math.floor(Date.now()/1000);
+  var data = pts.slice(), last = data[data.length-1];
+  if(now - last[0] > 60) data.push([now,last[1],last[2],last[3]]);
+  var t0 = data[0][0], t1 = data[data.length-1][0]; if(t1 <= t0) t1 = t0 + 3600;
+  var v = data.map(cscore), lo = Math.min.apply(null,v), hi = Math.max.apply(null,v);
+  var pad = Math.max(40,(hi-lo)*.15); lo -= pad; hi += pad;
+  if(hi-lo < 160){var c=(hi+lo)/2; lo=c-80; hi=c+80;}
+  var X=function(t){return L+(t-t0)/(t1-t0)*(W-L-R)}, Y=function(s){return T+(hi-s)/(hi-lo)*(H-T-B)};
+  var step=[100,200,400,800,1600,3200].filter(function(s){return (hi-lo)/s<=5})[0] || 3200;
+  var out = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" id="csvg">';
+  out += '<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+color+'" stop-opacity=".28"/><stop offset="1" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs>';
+  for(var g=Math.ceil(lo/step)*step; g<=hi; g+=step){
+    out += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="#233248" stroke-width="1"/>'
+         + '<text x="'+(L-8)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="#8394ab">'+esc(scoreLabel(g))+'</text>';
+  }
+  var span = (t1-t0)/86400;
+  for(var k=0;k<=4;k++){
+    var tt = t0+(t1-t0)*k/4;
+    out += '<text x="'+X(tt)+'" y="'+(H-8)+'" text-anchor="'+(k===0?"start":k===4?"end":"middle")+'" font-size="11" fill="#8394ab">'+fmtT(tt, span<2)+'</text>';
+  }
+  var line = data.map(function(d,i){return (i?"L":"M")+X(d[0]).toFixed(1)+" "+Y(v[i]).toFixed(1)}).join(" ");
+  out += '<path d="'+line+' L'+X(t1).toFixed(1)+" "+(H-B)+' L'+X(t0).toFixed(1)+" "+(H-B)+' Z" fill="url(#cg)"/>';
+  out += '<path d="'+line+'" fill="none" stroke="'+color+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+  var real = pts.length;
+  if(real <= 80) pts.forEach(function(d,i){out += '<circle cx="'+X(d[0]).toFixed(1)+'" cy="'+Y(v[i]).toFixed(1)+'" r="3.5" fill="#0e141e" stroke="'+color+'" stroke-width="2"/>'});
+  out += '<g id="cur" style="display:none"><line id="cl" y1="'+T+'" y2="'+(H-B)+'" stroke="#8394ab" stroke-dasharray="3 3"/><circle id="cc" r="5.5" fill="'+color+'" stroke="#0e141e" stroke-width="2"/></g>';
+  out += '<rect id="cr" x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" fill="transparent"/></svg>';
+  return {svg: out, data: data, v: v, X: X, Y: Y, W: W, real: real};
+}
+function attachHover(m){
+  var svg = document.getElementById("csvg"), tip = document.getElementById("mtip");
+  var cur = svg.querySelector("#cur"), cl = svg.querySelector("#cl"), cc = svg.querySelector("#cc");
+  function show(ev){
+    var r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * m.W, best = 0, bd = 1e9;
+    m.data.forEach(function(d,i){var dd = Math.abs(m.X(d[0]) - x); if(dd < bd){bd = dd; best = i;}});
+    var d = m.data[best], prev = best > 0 ? m.v[best-1] : null, dl = prev === null ? "" : "  (" + delta(m.v[best]-prev) + " LP)";
+    cur.style.display = ""; cl.setAttribute("x1", m.X(d[0])); cl.setAttribute("x2", m.X(d[0]));
+    cc.setAttribute("cx", m.X(d[0])); cc.setAttribute("cy", m.Y(m.v[best]));
+    tip.innerHTML = '<span style="color:var(--mut)">'+fmtT(d[0],true)+'</span> · <b>'+esc(rankText(d))+'</b>'+(prev===null?"":' <span class="'+(m.v[best]>=prev?"up":"dn")+'">'+esc(dl)+'</span>');
+  }
+  var rect = svg.querySelector("#cr");
+  rect.addEventListener("pointermove", show); rect.addEventListener("pointerdown", show);
+  rect.addEventListener("pointerleave", function(){cur.style.display="none"; tip.innerHTML = "&nbsp;";});
+}
+function openPlayer(riot){
+  var p = PLAYERS.filter(function(x){return x.riot === riot})[0]; if(!p) return;
+  var pts = (HIST[riot] || []).slice().sort(function(a,b){return a[0]-b[0]});
+  var hi = TIERS.indexOf(p.tier) >= 7, color = COL[p.tier] || "#f5c542";
+  document.getElementById("mem").innerHTML = emblem(p,hi);
+  document.getElementById("mt").textContent = p.name;
+  document.getElementById("ms").textContent = p.riot + (p.unranked ? " · non classé" : " · " + LBL[p.tier] + (hi ? "" : " " + ROM[p.div]) + " · " + p.lp + " LP");
+  var sum = "", chart = "", note = "";
+  var st = STATS && STATS.players && STATS.players[riot];
+  if(pts.length){
+    var diff = cscore(pts[pts.length-1]) - cscore(pts[0]);
+    var peak = pts.reduce(function(a,b){return cscore(b) > cscore(a) ? b : a});
+    sum += '<div>Depuis le début du suivi<b class="'+(diff>=0?"up":"dn")+'">'+delta(diff)+' LP</b></div>'
+         + '<div>Meilleur rang atteint<b>'+esc(rankText(peak))+'</b></div>';
+  }
+  if(st){
+    sum += '<div>Parties du challenge<b>'+st.games+' · '+st.winrate+'%</b></div><div>KDA<b>'+st.kda+'</b></div>'
+         + '<div>Série<b>'+(st.streak>0?"🔥 "+st.streak+" V":st.streak<0?"❄️ "+(-st.streak)+" D":"—")+'</b></div>';
+  }
+  document.getElementById("msum").innerHTML = sum;
+  document.getElementById("mtip").innerHTML = "&nbsp;";
+  var holder = document.getElementById("mchart"), model = null;
+  if(pts.length){ model = chartSvg(pts, color); holder.innerHTML = model.svg; attachHover(model); }
+  else holder.innerHTML = "";
+  if(!pts.length) note = p.unranked ? "Ce joueur n'est pas encore classé en solo/duo : le graphique apparaîtra après sa première partie classée." : "Pas encore de données : le graphique se remplit à chaque changement de LP.";
+  else if(pts.length === 1) note = "Un seul point pour l'instant : la courbe se dessine au fil des parties. Le suivi a commencé le " + fmtT(pts[0][0],true) + ".";
+  else note = "Un point à chaque changement de LP, depuis le " + fmtT(pts[0][0],true) + " (début du suivi automatique). Passe la souris sur la courbe pour le détail.";
+  document.getElementById("mnote").textContent = note;
+  lastFocus = document.activeElement;
+  document.getElementById("modal").hidden = false;
+  document.body.style.overflow = "hidden";
+  document.getElementById("mx").focus();
+}
+function closePlayer(){
+  document.getElementById("modal").hidden = true;
+  document.body.style.overflow = "";
+  if(lastFocus && lastFocus.focus) lastFocus.focus();
+}
+document.getElementById("mx").addEventListener("click", closePlayer);
+document.getElementById("modal").addEventListener("click", function(e){ if(e.target === this) closePlayer(); });
+document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !document.getElementById("modal").hidden) closePlayer(); });
+document.getElementById("rows").addEventListener("click", function(e){
+  if(e.target.closest("a")) return;
+  var tr = e.target.closest("tr[data-riot]"); if(tr) openPlayer(tr.getAttribute("data-riot"));
+});
+document.getElementById("rows").addEventListener("keydown", function(e){
+  if(e.key !== "Enter" && e.key !== " ") return;
+  var tr = e.target.closest("tr[data-riot]"); if(tr && e.target === tr){ e.preventDefault(); openPlayer(tr.getAttribute("data-riot")); }
+});
 document.getElementById("q").addEventListener("input", render);
 document.getElementById("sort").addEventListener("change", render);
 loadData();
+loadExtra();
 loadLive();
 setInterval(loadLive, 60000);
 loadDD();

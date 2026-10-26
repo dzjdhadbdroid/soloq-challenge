@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Statistiques · SoloQ Challenge</title>
+<style>
+:root{color-scheme:dark;--bg:#0e141e;--card:#162030;--line:#233248;--txt:#e8eef7;--mut:#8394ab;--win:#3b82f6;--loss:#ef4444;--gold:#f5c542;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:24px;padding:14px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font-weight:800;font-size:20px;letter-spacing:.5px}.logo b{color:var(--gold)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav a{color:var(--mut);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:14px}
+nav a.on,nav a:hover{background:var(--card);color:var(--txt)}
+.hero{text-align:center;padding:36px 16px 14px}
+.hero h1{margin:0 0 8px;font-size:34px}
+.hero p{margin:0;color:var(--mut)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 48px}
+h2{font-size:18px;margin:34px 0 6px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 14px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px}
+.rec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.rec .lab{color:var(--mut);font-size:13px;display:flex;gap:8px;align-items:flex-start;line-height:1.3}
+.rec .em{font-size:18px;line-height:1}
+.rec .val{font-size:30px;font-weight:800;margin:10px 0 2px;line-height:1.1}
+.rec .val small{font-size:14px;font-weight:600;color:var(--mut);margin-left:4px}
+.rec .who{font-weight:700;font-size:15px}
+.rec .det{color:var(--mut);font-size:13px;margin-top:2px}
+
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:860px}
+th{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;text-align:left;padding:8px 10px}
+td{padding:10px;border-top:1px solid var(--line);font-size:14px;vertical-align:middle}
+tbody tr{background:var(--card)}tbody tr:hover{background:#1c2a3f}
+td{white-space:nowrap}td.empty{white-space:normal}
+td.n b{display:block;font-size:15px}td.n small{color:var(--mut);font-size:12px}
+.v{color:var(--win)}.d{color:var(--loss)}.up{color:#4ade80}.dn{color:var(--loss)}
+.cc{display:flex;gap:6px}
+.cp{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mut)}
+.ci{width:34px;height:34px;border-radius:7px;background:#0b1220;border:2px solid var(--line);overflow:hidden;display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--mut)}
+.ci img{width:100%;height:100%;object-fit:cover;display:block}
+
+.bar{display:flex;gap:10px;margin:0 0 14px;flex-wrap:wrap}
+.bar select{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px;font-size:14px}
+.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.pair{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.pt{display:flex;align-items:center;justify-content:center;gap:12px;font-weight:700;font-size:16px;margin-bottom:12px}
+.pt span{flex:1}.pt span:first-child{text-align:right}.pt em{font-style:normal;color:var(--mut);font-size:12px}
+.row2{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.row2 .k{color:var(--mut)}
+.score{font-weight:800;font-size:20px}
+.bb{height:6px;border-radius:9px;background:#2a1416;overflow:hidden;display:flex;margin-top:6px}.bb i{display:block;height:100%;background:var(--win)}
+.empty{padding:30px;text-align:center;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:12px}
+.warn{background:#2a1416;border:1px solid #6b2328;color:#ffb4b8;border-radius:8px;padding:10px 14px;font-size:14px;margin:14px 0}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
+@media(max-width:640px){.hero h1{font-size:26px}header{padding:12px 14px}.pairs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">SoloQ<b>Challenge</b></div>
+  <nav><a href="index.html">Classement</a><a class="on" href="stats.html">Statistiques</a></nav>
+</header>
+
+<div class="hero">
+  <h1>Statistiques</h1>
+  <p id="intro">Chargement…</p>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <h2>Records</h2>
+  <p class="sub">Calculés sur les parties classées solo/duo depuis le début du challenge.</p>
+  <div class="recs" id="recs"></div>
+
+  <h2>Par joueur</h2>
+  <p class="sub">Trié par nombre de parties jouées.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Joueur</th><th>Parties</th><th>V – D</th><th>Winrate</th><th>KDA</th><th>Morts / partie</th><th>Meilleure série</th><th>Série en cours</th><th>Champions les plus joués</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+
+  <h2>Vis-à-vis entre potes</h2>
+  <p class="sub">Les parties où deux d'entre vous se sont retrouvés : dans des camps opposés, ou dans la même équipe.</p>
+  <div class="bar"><select id="who" aria-label="Filtrer par joueur"><option value="">Tous les joueurs</option></select></div>
+  <div class="pairs" id="pairs"></div>
+</div>
+<div class="wrap"><div class="warn" id="err" hidden></div></div>
+<footer>Fan-made · non affilié à Riot Games</footer>
+
+<script>
+var STATS = null, RANK = null, DD = {ver:null, map:null};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,"")}
+function icon(c){
+  var inner = esc(String(c).slice(0,3));
+  if(DD.map){
+    var id = DD.map[norm(c)];
+    if(id) inner = '<img alt="'+esc(c)+'" src="https://ddragon.leagueoflegends.com/cdn/'+DD.ver+'/img/champion/'+id+'.png" onerror="this.replaceWith(document.createTextNode(this.alt.slice(0,3)))">';
+  }
+  return '<div class="ci" title="'+esc(c)+'">'+inner+'</div>';
+}
+function loadDD(){
+  fetch("https://ddragon.leagueoflegends.com/api/versions.json").then(function(r){return r.json()}).then(function(v){
+    DD.ver = v[0];
+    return fetch("https://ddragon.leagueoflegends.com/cdn/"+DD.ver+"/data/en_US/champion.json");
+  }).then(function(r){return r.json()}).then(function(j){
+    DD.map = {};
+    Object.keys(j.data).forEach(function(id){DD.map[norm(id)] = id; DD.map[norm(j.data[id].name)] = id;});
+    if(STATS) render();
+  }).catch(function(){});
+}
+function streak(n){return n>0 ? '<span class="up">🔥 '+n+' V</span>' : n<0 ? '<span class="dn">❄️ '+(-n)+' D</span>' : "—"}
+function dateFr(sec){var d=new Date(sec*1000);return ("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)}
+
+var EM = {win_streak:"🔥",loss_streak:"❄️",most_games:"🎮",troll:"🤡",death_record:"💀",kills_record:"⚔️",best_kda:"🎯"};
+var UNIT = {win_streak:" victoires d'affilée",loss_streak:" défaites d'affilée",most_games:" parties",troll:" morts / partie",death_record:" morts",kills_record:" kills",best_kda:" KDA"};
+
+function render(){
+  var s = STATS;
+  document.getElementById("app").hidden = false;
+  document.getElementById("intro").textContent = s.games
+    ? s.games + " parties classées depuis le début du challenge · mis à jour " + (function(){var m=Math.max(0,Math.round((Date.now()/1000-s.updated)/60));return m<1?"à l'instant":m<60?"il y a "+m+" min":"le "+dateFr(s.updated)})()
+    : "Aucune partie classée enregistrée pour l'instant.";
+
+  // records
+  var rc = document.getElementById("recs");
+  rc.innerHTML = (s.records||[]).length ? s.records.map(function(r){
+    var v = r.key === "best_kda" ? r.value.toFixed(2) : r.value;
+    var unit = (UNIT[r.key]||"").replace(/^ /,"");
+    return '<div class="rec"><div class="lab"><span class="em">'+(EM[r.key]||"🏆")+'</span><span>'+esc(r.label)+'</span></div>'
+      + '<div class="val">'+esc(v)+'<small>'+esc(unit)+'</small></div><div class="who">'+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div></div>';
+  }).join("") : '<div class="empty" style="grid-column:1/-1">Les records apparaîtront dès les premières parties classées.</div>';
+
+  // joueurs
+  var list = Object.keys(s.players).map(function(k){var p = s.players[k]; p.riot = k; return p}).sort(function(a,b){return b.games-a.games});
+  document.getElementById("rows").innerHTML = list.length ? list.map(function(p){
+    return '<tr><td class="n"><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></td><td>'+p.games+'</td>'
+      + '<td><span class="v">'+p.wins+'</span> – <span class="d">'+p.losses+'</span></td><td><b>'+p.winrate+'%</b></td>'
+      + '<td>'+p.kda.toFixed(2)+'<br><small style="color:var(--mut)">'+p.avg_kills+' / '+p.avg_deaths+' / '+p.avg_assists+'</small></td>'
+      + '<td>'+p.avg_deaths+'</td><td>🔥 '+p.best_win_streak+' V<br><small style="color:var(--mut)">❄️ '+p.best_loss_streak+' D</small></td>'
+      + '<td>'+streak(p.streak)+'</td>'
+      + '<td><div class="cc">'+p.champs.map(function(c){return '<div class="cp">'+icon(c.champ)+'<span>'+c.games+' · '+Math.round(100*c.wins/c.games)+'%</span></div>'}).join("")+'</div></td></tr>';
+  }).join("") : '<tr><td colspan="9" class="empty">Pas encore de parties.</td></tr>';
+
+  // vis-à-vis
+  var sel = document.getElementById("who"), cur = sel.value;
+  if(sel.options.length === 1){
+    list.slice().sort(function(a,b){return a.name.localeCompare(b.name)}).forEach(function(p){
+      var o = document.createElement("option"); o.value = p.riot; o.textContent = p.name; sel.appendChild(o);
+    });
+  }
+  var pairs = (s.pairs||[]).filter(function(p){return !cur || p.a === cur || p.b === cur});
+  document.getElementById("pairs").innerHTML = pairs.length ? pairs.map(function(p){
+    var ag = p.against, tg = p.together, tot = ag.a_wins + ag.b_wins;
+    var a = p.a_name, b = p.b_name, aw = ag.a_wins, bw = ag.b_wins;
+    if(cur && p.b === cur){ a = p.b_name; b = p.a_name; aw = ag.b_wins; bw = ag.a_wins; }
+    var tw = tg.games ? Math.round(100*tg.wins/tg.games) : 0;
+    return '<div class="pair"><div class="pt"><span>'+esc(a)+'</span><em>VS</em><span>'+esc(b)+'</span></div>'
+      + '<div class="row2"><span class="k">En face</span>'
+      + (ag.games ? '<span><span class="score"><span class="v">'+aw+'</span> – <span class="d">'+bw+'</span></span> <small style="color:var(--mut)">'+ag.games+' partie'+(ag.games>1?"s":"")+'</small></span>' : '<span style="color:var(--mut)">jamais</span>')
+      + '</div>' + (ag.games ? '<div class="bb"><i style="width:'+Math.round(100*aw/Math.max(1,aw+bw))+'%"></i></div>' : '')
+      + '<div class="row2" style="margin-top:10px"><span class="k">Dans la même équipe</span>'
+      + (tg.games ? '<span><b>'+tg.games+'</b> partie'+(tg.games>1?"s":"")+' · <span class="v">'+tg.wins+' V</span> · <span class="d">'+(tg.games-tg.wins)+' D</span> <small style="color:var(--mut)">('+tw+'%)</small></span>' : '<span style="color:var(--mut)">jamais</span>')
+      + '</div></div>';
+  }).join("") : '<div class="empty" style="grid-column:1/-1">'+(cur ? "Ce joueur ne s'est encore croisé avec aucun autre membre du groupe." : "Aucune partie commune pour l'instant. Dès que deux d'entre vous se croisent en classée, ça apparaît ici.")+'</div>';
+}
+
+document.getElementById("who").addEventListener("change", function(){ if(STATS) render(); });
+fetch("data/stats.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){STATS = d; render();})
+  .catch(function(){
+    document.getElementById("intro").textContent = "Statistiques pas encore disponibles.";
+    var e = document.getElementById("err"); e.hidden = false;
+    e.textContent = "Le fichier data/stats.json n'existe pas encore. Il est créé au prochain passage automatique (Actions → update-ranking → Run workflow pour le lancer maintenant).";
+  });
+loadDD();
+</script>
+</body>
+</html>
