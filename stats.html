@@ -5,58 +5,108 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Statistiques · SoloQ Challenge</title>
 <style>
-:root{color-scheme:dark;--bg:#0e141e;--card:#162030;--line:#233248;--txt:#e8eef7;--mut:#8394ab;--win:#3b82f6;--loss:#ef4444;--gold:#f5c542;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{color-scheme:dark;--bg:#0e141e;--card:#162030;--card2:#1b2a40;--line:#233248;--txt:#e8eef7;--mut:#8394ab;--win:#3b82f6;--loss:#ef4444;--gold:#f5c542;--up:#4ade80;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(900px 340px at 50% -120px,rgba(245,197,66,.13),transparent 70%),var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
 header{display:flex;align-items:center;gap:24px;padding:14px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .logo{font-weight:800;font-size:20px;letter-spacing:.5px}.logo b{color:var(--gold)}
 nav{display:flex;gap:4px;flex-wrap:wrap}
 nav a{color:var(--mut);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:14px}
 nav a.on,nav a:hover{background:var(--card);color:var(--txt)}
-.hero{text-align:center;padding:36px 16px 14px}
-.hero h1{margin:0 0 8px;font-size:34px}
-.hero p{margin:0;color:var(--mut)}
+
+.hero{text-align:center;padding:36px 16px 8px}
+.hero h1{margin:0 0 8px;font-size:clamp(28px,5vw,38px)}
+.hero p{margin:0;color:var(--mut);font-size:15px}
 .wrap{max-width:1100px;margin:0 auto;padding:0 16px 48px}
-h2{font-size:18px;margin:34px 0 6px}
+
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 8px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tile small{display:block;color:var(--mut);font-size:12px}
+.tile b{display:block;font-size:26px;font-weight:800;margin-top:4px;line-height:1.1}
+.tile span{display:block;color:var(--mut);font-size:12px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.tabs{position:sticky;top:0;z-index:5;display:flex;gap:6px;padding:10px 0;margin:6px 0 0;background:linear-gradient(var(--bg) 70%,transparent)}
+.tabs a{color:var(--mut);text-decoration:none;font-size:14px;padding:7px 14px;border-radius:99px;border:1px solid var(--line);background:var(--card)}
+.tabs a:hover{color:var(--txt);border-color:#33466a}
+h2{display:flex;align-items:center;gap:10px;font-size:20px;margin:26px 0 4px;scroll-margin-top:60px}
+h2:before{content:"";width:4px;height:20px;border-radius:3px;background:var(--gold)}
 .sub{color:var(--mut);font-size:13px;margin:0 0 14px}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
 
-.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px}
-.rec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.rec .lab{color:var(--mut);font-size:13px;display:flex;gap:8px;align-items:flex-start;line-height:1.3}
-.rec .em{font-size:18px;line-height:1}
-.rec .val{font-size:30px;font-weight:800;margin:10px 0 2px;line-height:1.1}
-.rec .val small{font-size:14px;font-weight:600;color:var(--mut);margin-left:4px}
-.rec .who{font-weight:700;font-size:15px}
-.rec .det{color:var(--mut);font-size:13px;margin-top:2px}
+.av{width:28px;height:28px;border-radius:50%;background:hsl(var(--h) 55% 36%);border:1px solid hsl(var(--h) 55% 52%);display:inline-grid;place-items:center;font-weight:800;font-size:13px;flex:none;color:#fff}
 
+/* records */
+.recs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.rec{position:relative;overflow:hidden;background:radial-gradient(180px 130px at 100% 0,color-mix(in srgb,var(--a) 20%,transparent),transparent),var(--card);border:1px solid var(--line);border-top:3px solid var(--a);border-radius:12px;padding:14px 16px 16px;transition:transform .15s,border-color .15s}
+.rec:hover{transform:translateY(-2px);border-color:var(--a)}
+.rec .ic{position:absolute;right:12px;top:8px;font-size:30px;opacity:.9}
+.rec .lab{color:var(--mut);font-size:13px;line-height:1.3;max-width:calc(100% - 44px);min-height:34px}
+.rec .val{font-size:38px;font-weight:800;margin:10px 0 2px;line-height:1.05;color:var(--a);font-variant-numeric:tabular-nums}
+.rec .val small{font-size:14px;font-weight:600;color:var(--mut);margin-left:6px}
+.rec .who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-top:10px}
+.rec .det{color:var(--mut);font-size:13px;margin-top:4px}
+.rec.big{grid-column:span 2;background:radial-gradient(260px 160px at 100% 0,color-mix(in srgb,var(--a) 28%,transparent),transparent),var(--card)}
+.rec.big .val{font-size:52px}.rec.big .ic{font-size:46px}
+
+/* joueurs : tableau */
 .scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:860px}
-th{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;text-align:left;padding:8px 10px}
-td{padding:10px;border-top:1px solid var(--line);font-size:14px;vertical-align:middle}
-tbody tr{background:var(--card)}tbody tr:hover{background:#1c2a3f}
-td{white-space:nowrap}td.empty{white-space:normal}
+table{width:100%;border-collapse:separate;border-spacing:0 6px;min-width:900px}
+th{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;text-align:left;padding:4px 10px}
+td{padding:10px;font-size:14px;vertical-align:middle;background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}
+td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px}
+td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}
+tbody tr:hover td{background:var(--card2)}
 td.n b{display:block;font-size:15px}td.n small{color:var(--mut);font-size:12px}
-.v{color:var(--win)}.d{color:var(--loss)}.up{color:#4ade80}.dn{color:var(--loss)}
-.cc{display:flex;gap:6px}
-.cp{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mut)}
-.ci{width:34px;height:34px;border-radius:7px;background:#0b1220;border:2px solid var(--line);overflow:hidden;display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--mut)}
+.nn{display:flex;align-items:center;gap:10px}
+.v{color:var(--win);font-weight:600}.d{color:var(--loss);font-weight:600}
+.wr b{font-size:16px}
+.mb{height:4px;border-radius:9px;background:#2a1416;margin-top:5px;overflow:hidden;width:78px;display:flex}.mb i{display:block;height:100%;background:var(--win)}
+.kda{font-weight:800}.kda.good{color:var(--up)}.kda.bad{color:var(--loss)}
+.sm{display:block;color:var(--mut);font-size:12px;font-weight:400}
+.pill{display:inline-block;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;border:1px solid var(--line);background:#0f1826}
+.pill.up{color:var(--up);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08)}
+.pill.dn{color:#ff8a8a;border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.08)}
+.cc{display:flex;gap:8px}
+.cp{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut)}
+.ci{width:38px;height:38px;border-radius:9px;background:#0b1220;border:2px solid var(--line);overflow:hidden;display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--mut)}
 .ci img{width:100%;height:100%;object-fit:cover;display:block}
+.pcards{display:none;gap:10px}
 
+/* vis-à-vis */
 .bar{display:flex;gap:10px;margin:0 0 14px;flex-wrap:wrap}
 .bar select{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px;font-size:14px}
-.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-.pair{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.pt{display:flex;align-items:center;justify-content:center;gap:12px;font-weight:700;font-size:16px;margin-bottom:12px}
-.pt span{flex:1}.pt span:first-child{text-align:right}.pt em{font-style:normal;color:var(--mut);font-size:12px}
-.row2{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
-.row2 .k{color:var(--mut)}
-.score{font-weight:800;font-size:20px}
-.bb{height:6px;border-radius:9px;background:#2a1416;overflow:hidden;display:flex;margin-top:6px}.bb i{display:block;height:100%;background:var(--win)}
-.empty{padding:30px;text-align:center;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:12px}
+.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.pair{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.side{display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:700;font-size:15px;text-align:center;min-width:0;overflow-wrap:anywhere}
+.side .av{width:40px;height:40px;font-size:17px}
+.side.lead .av{box-shadow:0 0 0 2px var(--gold)}
+.side em{font-style:normal;font-size:12px;color:var(--gold);height:14px}
+.score{font-size:30px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:center}
+.score small{display:block;text-align:center;color:var(--mut);font-size:12px;font-weight:500}
+.split{height:7px;border-radius:9px;background:var(--loss);overflow:hidden;margin:14px 0 12px}.split i{display:block;height:100%;background:var(--win)}
+.tg{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:10px;font-size:14px;color:var(--mut)}
+.tg span:last-child{color:var(--txt);text-align:right}
+.empty{padding:28px;text-align:center;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:12px;white-space:normal}
 .warn{background:#2a1416;border:1px solid #6b2328;color:#ffb4b8;border-radius:8px;padding:10px 14px;font-size:14px;margin:14px 0}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
-@media(max-width:640px){.hero h1{font-size:26px}header{padding:12px 14px}.pairs{grid-template-columns:1fr}}
+
+@media(max-width:980px){.recs{grid-template-columns:repeat(2,1fr)}.rec.big{grid-column:span 2}.tiles{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+  header{padding:12px 14px}
+  .recs{grid-template-columns:1fr}.rec.big{grid-column:auto}.rec.big .val{font-size:44px}
+  .scroll{display:none}.pcards{display:grid}
+  .pc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .pc .top{display:flex;align-items:center;gap:10px}
+  .pc .top .nm{flex:1;min-width:0}.pc .top b{display:block}.pc .top small{color:var(--mut);font-size:12px}
+  .pc .big{font-size:22px;font-weight:800;text-align:right}
+  .pc .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;text-align:center}
+  .pc .grid div{background:#0f1826;border-radius:8px;padding:8px 4px;font-weight:700}.pc .grid small{display:block;color:var(--mut);font-size:11px;font-weight:400}
+  .pc .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .pairs{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rec{transition:none}}
 </style>
 </head>
 <body>
@@ -71,18 +121,22 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 </div>
 
 <div class="wrap" id="app" hidden>
-  <h2>Records</h2>
+  <div class="tiles" id="tiles"></div>
+  <div class="tabs"><a href="#records">Records</a><a href="#joueurs">Par joueur</a><a href="#duels">Vis-à-vis</a></div>
+
+  <h2 id="records">Records</h2>
   <p class="sub">Calculés sur les parties classées solo/duo depuis le début du challenge.</p>
   <div class="recs" id="recs"></div>
 
-  <h2>Par joueur</h2>
+  <h2 id="joueurs">Par joueur</h2>
   <p class="sub">Trié par nombre de parties jouées.</p>
   <div class="scroll"><table>
     <thead><tr><th>Joueur</th><th>Parties</th><th>V – D</th><th>Winrate</th><th>KDA</th><th>Morts / partie</th><th>Meilleure série</th><th>Série en cours</th><th>Champions les plus joués</th></tr></thead>
     <tbody id="rows"></tbody>
   </table></div>
+  <div class="pcards" id="pcards"></div>
 
-  <h2>Vis-à-vis entre potes</h2>
+  <h2 id="duels">Vis-à-vis entre potes</h2>
   <p class="sub">Les parties où deux d'entre vous se sont retrouvés : dans des camps opposés, ou dans la même équipe.</p>
   <div class="bar"><select id="who" aria-label="Filtrer par joueur"><option value="">Tous les joueurs</option></select></div>
   <div class="pairs" id="pairs"></div>
@@ -91,9 +145,11 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 <footer>Fan-made · non affilié à Riot Games</footer>
 
 <script>
-var STATS = null, RANK = null, DD = {ver:null, map:null};
+var STATS = null, DD = {ver:null, map:null};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,"")}
+function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+function av(name){return '<span class="av" style="--h:'+hue(name)+'">'+esc(String(name).slice(0,1).toUpperCase())+'</span>'}
 function icon(c){
   var inner = esc(String(c).slice(0,3));
   if(DD.map){
@@ -112,38 +168,61 @@ function loadDD(){
     if(STATS) render();
   }).catch(function(){});
 }
-function streak(n){return n>0 ? '<span class="up">🔥 '+n+' V</span>' : n<0 ? '<span class="dn">❄️ '+(-n)+' D</span>' : "—"}
+function streakPill(n){return n>0 ? '<span class="pill up">🔥 '+n+' V d\'affilée</span>' : n<0 ? '<span class="pill dn">❄️ '+(-n)+' D d\'affilée</span>' : '<span class="pill">—</span>'}
 function dateFr(sec){var d=new Date(sec*1000);return ("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)}
+function ago(sec){var m=Math.max(0,Math.round((Date.now()/1000-sec)/60));return m<1?"à l'instant":m<60?"il y a "+m+" min":"le "+dateFr(sec)}
+function kdaCls(k){return k>=3?"good":k<1.5?"bad":""}
+function champs(p,n){return p.champs.slice(0,n).map(function(c){return '<div class="cp">'+icon(c.champ)+'<span>'+c.games+' · '+Math.round(100*c.wins/c.games)+'%</span></div>'}).join("")}
 
 var EM = {win_streak:"🔥",loss_streak:"❄️",most_games:"🎮",troll:"🤡",death_record:"💀",kills_record:"⚔️",best_kda:"🎯"};
-var UNIT = {win_streak:" victoires d'affilée",loss_streak:" défaites d'affilée",most_games:" parties",troll:" morts / partie",death_record:" morts",kills_record:" kills",best_kda:" KDA"};
+var ACC = {win_streak:"#f59e0b",loss_streak:"#60a5fa",most_games:"#a78bfa",troll:"#ef4444",death_record:"#fb7185",kills_record:"#34d399",best_kda:"#f5c542"};
+var UNIT = {win_streak:"victoires d'affilée",loss_streak:"défaites d'affilée",most_games:"parties",troll:"morts / partie",death_record:"morts",kills_record:"kills",best_kda:"KDA"};
 
 function render(){
   var s = STATS;
   document.getElementById("app").hidden = false;
   document.getElementById("intro").textContent = s.games
-    ? s.games + " parties classées depuis le début du challenge · mis à jour " + (function(){var m=Math.max(0,Math.round((Date.now()/1000-s.updated)/60));return m<1?"à l'instant":m<60?"il y a "+m+" min":"le "+dateFr(s.updated)})()
+    ? s.games + " parties classées depuis le début du challenge · mis à jour " + ago(s.updated)
     : "Aucune partie classée enregistrée pour l'instant.";
 
+  var list = Object.keys(s.players).map(function(k){var p = s.players[k]; p.riot = k; return p}).sort(function(a,b){return b.games-a.games});
+
+  // chiffres du groupe
+  var G = 0, W = 0, D = 0, bestS = null;
+  list.forEach(function(p){G += p.games; W += p.wins; D += p.deaths; if(!bestS || p.best_win_streak > bestS.best_win_streak) bestS = p;});
+  document.getElementById("tiles").innerHTML = list.length
+    ? '<div class="tile"><small>Parties jouées</small><b>'+s.games+'</b><span>par '+list.length+' joueur'+(list.length>1?"s":"")+'</span></div>'
+    + '<div class="tile"><small>Winrate du groupe</small><b>'+(G?Math.round(100*W/G):0)+'%</b><span>'+W+' V · '+(G-W)+' D</span></div>'
+    + '<div class="tile"><small>Morts au total</small><b>'+D+'</b><span>'+(G?(D/G).toFixed(1):0)+' par partie</span></div>'
+    + '<div class="tile"><small>Plus longue série</small><b>'+(bestS?bestS.best_win_streak+" V":"—")+'</b><span>'+(bestS?esc(bestS.name):"")+'</span></div>'
+    : "";
+
   // records
-  var rc = document.getElementById("recs");
-  rc.innerHTML = (s.records||[]).length ? s.records.map(function(r){
-    var v = r.key === "best_kda" ? r.value.toFixed(2) : r.value;
-    var unit = (UNIT[r.key]||"").replace(/^ /,"");
-    return '<div class="rec"><div class="lab"><span class="em">'+(EM[r.key]||"🏆")+'</span><span>'+esc(r.label)+'</span></div>'
-      + '<div class="val">'+esc(v)+'<small>'+esc(unit)+'</small></div><div class="who">'+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div></div>';
+  document.getElementById("recs").innerHTML = (s.records||[]).length ? s.records.map(function(r){
+    var v = r.key === "best_kda" ? Number(r.value).toFixed(2) : r.value;
+    return '<article class="rec'+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
+      + '<div class="lab">'+esc(r.label)+'</div>'
+      + '<div class="val">'+esc(v)+'<small>'+esc(UNIT[r.key]||"")+'</small></div>'
+      + '<div class="who">'+av(r.name)+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div></article>';
   }).join("") : '<div class="empty" style="grid-column:1/-1">Les records apparaîtront dès les premières parties classées.</div>';
 
-  // joueurs
-  var list = Object.keys(s.players).map(function(k){var p = s.players[k]; p.riot = k; return p}).sort(function(a,b){return b.games-a.games});
+  // joueurs : tableau (ordinateur)
   document.getElementById("rows").innerHTML = list.length ? list.map(function(p){
-    return '<tr><td class="n"><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></td><td>'+p.games+'</td>'
-      + '<td><span class="v">'+p.wins+'</span> – <span class="d">'+p.losses+'</span></td><td><b>'+p.winrate+'%</b></td>'
-      + '<td>'+p.kda.toFixed(2)+'<br><small style="color:var(--mut)">'+p.avg_kills+' / '+p.avg_deaths+' / '+p.avg_assists+'</small></td>'
-      + '<td>'+p.avg_deaths+'</td><td>🔥 '+p.best_win_streak+' V<br><small style="color:var(--mut)">❄️ '+p.best_loss_streak+' D</small></td>'
-      + '<td>'+streak(p.streak)+'</td>'
-      + '<td><div class="cc">'+p.champs.map(function(c){return '<div class="cp">'+icon(c.champ)+'<span>'+c.games+' · '+Math.round(100*c.wins/c.games)+'%</span></div>'}).join("")+'</div></td></tr>';
-  }).join("") : '<tr><td colspan="9" class="empty">Pas encore de parties.</td></tr>';
+    return '<tr><td class="n"><div class="nn">'+av(p.name)+'<div><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></div></div></td><td>'+p.games+'</td>'
+      + '<td><span class="v">'+p.wins+'</span> – <span class="d">'+p.losses+'</span></td>'
+      + '<td class="wr"><b>'+p.winrate+'%</b><div class="mb"><i style="width:'+p.winrate+'%"></i></div></td>'
+      + '<td><span class="kda '+kdaCls(p.kda)+'">'+Number(p.kda).toFixed(2)+'</span><span class="sm">'+p.avg_kills+' / '+p.avg_deaths+' / '+p.avg_assists+'</span></td>'
+      + '<td>'+p.avg_deaths+'</td><td>🔥 '+p.best_win_streak+' V<span class="sm">❄️ '+p.best_loss_streak+' D</span></td>'
+      + '<td>'+streakPill(p.streak)+'</td><td><div class="cc">'+champs(p,3)+'</div></td></tr>';
+  }).join("") : '<tr><td colspan="9"><div class="empty">Pas encore de parties.</div></td></tr>';
+
+  // joueurs : cartes (téléphone)
+  document.getElementById("pcards").innerHTML = list.map(function(p){
+    return '<div class="pc"><div class="top">'+av(p.name)+'<div class="nm"><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></div><div class="big">'+p.winrate+'%</div></div>'
+      + '<div class="grid"><div>'+p.games+'<small>parties</small></div><div><span class="v">'+p.wins+'</span>–<span class="d">'+p.losses+'</span><small>V – D</small></div>'
+      + '<div><span class="kda '+kdaCls(p.kda)+'">'+Number(p.kda).toFixed(2)+'</span><small>KDA</small></div><div>'+p.avg_deaths+'<small>morts/partie</small></div></div>'
+      + '<div class="foot">'+streakPill(p.streak)+'<div class="cc">'+champs(p,3)+'</div></div></div>';
+  }).join("");
 
   // vis-à-vis
   var sel = document.getElementById("who"), cur = sel.value;
@@ -154,16 +233,18 @@ function render(){
   }
   var pairs = (s.pairs||[]).filter(function(p){return !cur || p.a === cur || p.b === cur});
   document.getElementById("pairs").innerHTML = pairs.length ? pairs.map(function(p){
-    var ag = p.against, tg = p.together, tot = ag.a_wins + ag.b_wins;
+    var ag = p.against, tg = p.together;
     var a = p.a_name, b = p.b_name, aw = ag.a_wins, bw = ag.b_wins;
     if(cur && p.b === cur){ a = p.b_name; b = p.a_name; aw = ag.b_wins; bw = ag.a_wins; }
+    var lead = aw > bw ? 1 : bw > aw ? 2 : 0;
     var tw = tg.games ? Math.round(100*tg.wins/tg.games) : 0;
-    return '<div class="pair"><div class="pt"><span>'+esc(a)+'</span><em>VS</em><span>'+esc(b)+'</span></div>'
-      + '<div class="row2"><span class="k">En face</span>'
-      + (ag.games ? '<span><span class="score"><span class="v">'+aw+'</span> – <span class="d">'+bw+'</span></span> <small style="color:var(--mut)">'+ag.games+' partie'+(ag.games>1?"s":"")+'</small></span>' : '<span style="color:var(--mut)">jamais</span>')
-      + '</div>' + (ag.games ? '<div class="bb"><i style="width:'+Math.round(100*aw/Math.max(1,aw+bw))+'%"></i></div>' : '')
-      + '<div class="row2" style="margin-top:10px"><span class="k">Dans la même équipe</span>'
-      + (tg.games ? '<span><b>'+tg.games+'</b> partie'+(tg.games>1?"s":"")+' · <span class="v">'+tg.wins+' V</span> · <span class="d">'+(tg.games-tg.wins)+' D</span> <small style="color:var(--mut)">('+tw+'%)</small></span>' : '<span style="color:var(--mut)">jamais</span>')
+    return '<div class="pair"><div class="duel">'
+      + '<div class="side'+(lead===1?" lead":"")+'">'+av(a)+'<span>'+esc(a)+'</span><em>'+(lead===1?"👑 devant":"")+'</em></div>'
+      + '<div class="score">'+(ag.games ? '<span class="v">'+aw+'</span> – <span class="d">'+bw+'</span><small>'+ag.games+' partie'+(ag.games>1?"s":"")+' en face</small>' : '<span style="color:var(--mut)">VS</span><small>jamais en face</small>')+'</div>'
+      + '<div class="side'+(lead===2?" lead":"")+'">'+av(b)+'<span>'+esc(b)+'</span><em>'+(lead===2?"👑 devant":"")+'</em></div></div>'
+      + (ag.games ? '<div class="split"><i style="width:'+Math.round(100*aw/Math.max(1,aw+bw))+'%"></i></div>' : '<div style="height:14px"></div>')
+      + '<div class="tg"><span>Dans la même équipe</span>'
+      + (tg.games ? '<span><b>'+tg.games+'</b> partie'+(tg.games>1?"s":"")+' · <span class="v">'+tg.wins+' V</span> · <span class="d">'+(tg.games-tg.wins)+' D</span> ('+tw+'%)</span>' : '<span>jamais</span>')
       + '</div></div>';
   }).join("") : '<div class="empty" style="grid-column:1/-1">'+(cur ? "Ce joueur ne s'est encore croisé avec aucun autre membre du groupe." : "Aucune partie commune pour l'instant. Dès que deux d'entre vous se croisent en classée, ça apparaît ici.")+'</div>';
 }
