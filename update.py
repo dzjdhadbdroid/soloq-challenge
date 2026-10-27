@@ -174,6 +174,18 @@ for p in players:
             get(f"{ROUTING}/lol/match/v5/matches/by-puuid/{puuid}/ids",
                 queue=SOLO_QUEUE, start=0, count=10) or [])
 
+        try:   # diagnostic : dernières parties toutes files confondues
+            ids_all = get(f"{ROUTING}/lol/match/v5/matches/by-puuid/{puuid}/ids", start=0, count=4) or []
+            rec = []
+            for mid_ in ids_all:
+                mm = get(f"{ROUTING}/lol/match/v5/matches/{mid_}")
+                if mm:
+                    ii = mm["info"]
+                    rec.append({"id": mid_, "file": ii.get("queueId"),
+                                "fin_utc": time.strftime("%d/%m %H:%M", time.gmtime((ii.get("gameEndTimestamp") or 0) // 1000))})
+            DEBUG[riot]["toutes_files"] = rec
+        except Exception as e_:
+            DEBUG[riot]["toutes_files"] = str(e_)
         DEBUG[riot]["parties_depuis_debut"] = len(since)
         DEBUG[riot]["dernieres_parties"] = since[:3]
         info[riot] = {"puuid": puuid, "last10": last10, "since": since}
