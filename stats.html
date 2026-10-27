@@ -48,6 +48,15 @@ h2:before{content:"";width:4px;height:20px;border-radius:3px;background:var(--go
 .rec .who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-top:10px}
 .rec .det{color:var(--mut);font-size:13px;margin-top:4px}
 [hidden]{display:none!important}
+.cmpd{margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.cmpd>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;flex-direction:column;gap:2px;position:relative;padding-right:50px}
+.cmpd>summary::-webkit-details-marker{display:none}
+.cmpd>summary span{font-size:20px;font-weight:800}
+.cmpd>summary small{color:var(--mut);font-size:13px}
+.cmpd>summary::after{content:"▾";position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--mut);transition:transform .2s}
+.cmpd[open]>summary::after{transform:translateY(-50%) rotate(180deg)}
+.cmpd[open]>summary{border-bottom:1px solid var(--line)}
+.cmpd>.cmpbar{padding:14px 18px 0}.cmpd>.cmp{margin:14px 18px 18px}
 .cmpbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .cmpbar select{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px;font-size:14px}.cmpbar span{color:var(--mut);font-weight:800}
 .cmp{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -161,10 +170,11 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
   </table></div>
   <div class="pcards" id="pcards"></div>
 
-  <h2 id="compare">Comparateur</h2>
-  <p class="sub">Choisis deux joueurs et compare-les côte à côte. Le meilleur de chaque ligne est mis en avant.</p>
-  <div class="cmpbar"><select id="ca" aria-label="Premier joueur"></select><span>VS</span><select id="cb" aria-label="Second joueur"></select></div>
-  <div class="cmp" id="cmp"></div>
+  <details class="cmpd" id="compare">
+    <summary><span>Comparateur de deux joueurs</span><small>Choisis deux joueurs et compare-les côte à côte</small></summary>
+    <div class="cmpbar"><select id="ca" aria-label="Premier joueur"></select><span>VS</span><select id="cb" aria-label="Second joueur"></select></div>
+    <div class="cmp" id="cmp"></div>
+  </details>
 
   <h2 id="duels">Vis-à-vis entre potes</h2>
   <p class="sub">Les parties où deux d'entre vous se sont retrouvés : dans des camps opposés, ou dans la même équipe.</p>
@@ -337,6 +347,9 @@ function render(){
   }).join("") : '<div class="empty" style="grid-column:1/-1">'+(cur ? "Ce joueur ne s'est encore croisé avec aucun autre membre du groupe." : "Aucune partie commune pour l'instant. Dès que deux d'entre vous se croisent en classée, ça apparaît ici.")+'</div>';
 }
 
+// le lien « Comparateur » de la barre ouvre le menu
+function openCmp(){ if(location.hash === "#compare"){ var d = document.getElementById("compare"); d.open = true; d.scrollIntoView(); } }
+window.addEventListener("hashchange", openCmp);
 document.getElementById("ca").addEventListener("change", function(){CMP.a = this.value; if(STATS) render()});
 document.getElementById("cb").addEventListener("change", function(){CMP.b = this.value; if(STATS) render()});
 document.getElementById("who").addEventListener("change", function(){ if(STATS) render(); });
