@@ -40,8 +40,11 @@ def load(path, default):
         return default
 
 
-players = [p for p in json.loads(Path("players.json").read_text(encoding="utf-8"))
-           if isinstance(p, dict) and "#" in str(p.get("riot", ""))][:20]
+try:
+    _pl = json.loads(Path("players.json").read_text(encoding="utf-8"))
+except json.JSONDecodeError as e:
+    raise SystemExit(f"players.json invalide (ligne {e.lineno}) : {e.msg}")
+players = [p for p in _pl if isinstance(p, dict) and "#" in str(p.get("riot", ""))][:20]
 # Les PUUID dépendent de la clé API : si la clé change, on repart de zéro.
 KEYH = hashlib.sha256(KEY.encode()).hexdigest()[:10]
 _c = load(D / "puuids_live.json", {})

@@ -29,11 +29,20 @@ T0 = time.time()
 
 def get(url, **params):
     """GET avec pause anti rate-limit et gestion du 429."""
-    for _ in range(5):
+    for attempt in range(5):
         time.sleep(1.3)  # reste sous 100 requêtes / 2 min
-        r = requests.get(url, headers=H, params=params, timeout=20)
+        try:
+            r = requests.get(url, headers=H, params=params, timeout=20)
+        except requests.RequestException:      # coupure réseau passagère
+            if attempt == 4:
+                raise
+            time.sleep(3)
+            continue
         if r.status_code == 429:
             time.sleep(int(r.headers.get("Retry-After", 5)) + 1)
+            continue
+        if r.status_code >= 500 and attempt < 4:   # panne passagère côté Riot
+            time.sleep(3 * (attempt + 1))
             continue
         if r.status_code == 404:
             return None
@@ -56,6 +65,8 @@ def save(name, data, **kw):
 # ---------- configuration ----------
 config = load(Path("config.json"), {"start": "2026-10-22", "end": "2026-11-22"})
 START_TS = int(datetime.fromisoformat(config["start"]).replace(tzinfo=ZoneInfo("Europe/Paris")).timestamp())
+# fin du challenge : le dernier jour est inclus (jusqu'à 23 h 59 heure de Paris)
+END_TS = int(datetime.fromisoformat(config["end"]).replace(tzinfo=ZoneInfo("Europe/Paris")).timestamp()) + 86400 - 1
 errors = []   # problèmes affichés sur le site
 
 
@@ -152,7 +163,7 @@ for p in players:
         since = []
         for page in range(5):   # jusqu'à 500 parties depuis le début du challenge
             ids = get(f"{ROUTING}/lol/match/v5/matches/by-puuid/{puuid}/ids",
-                      queue=SOLO_QUEUE, startTime=START_TS, start=page * 100, count=100) or []
+                      queue=SOLO_QUEUE, startTime=START_TS, endTime=END_TS, start=page * 100, count=100) or []
             since += ids
             if len(ids) < 100:
                 break
@@ -252,7 +263,7 @@ for riot, i in info.items():
 now = int(time.time())
 for riot in fresh_riots:
     r = result[riot]
-    if r["unranked"]:
+    if r["unranked"] or now > END_TS:   # après la fin, la courbe est figée
         continue
     point = [now, r["tier"], r["div"], r["lp"]]
     h = history.setdefault(riot, [])
@@ -266,7 +277,7 @@ for mid in [m for m, g in games.items() if g["t"] < START_TS and m not in keep]:
 
 save("games.json", games, separators=(",", ":"))
 save("history.json", history, separators=(",", ":"))
-stats = build_stats(games, players, START_TS, now)
+stats = build_stats(games, players, START_TS, now, END_TS)
 for riot_, pl_ in stats["players"].items():
     pl_["avatar"] = av_map.get(riot_)
 save("stats.json", stats, separators=(",", ":"))

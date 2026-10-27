@@ -29,13 +29,13 @@ def _streaks(results):
     return best_w, best_l, current
 
 
-def build_stats(games, players, start_ts, now):
+def build_stats(games, players, start_ts, now, end_ts=None):
     """players : [{"name":..., "riot":...}]. Renvoie un dictionnaire prêt à être écrit en JSON."""
     by_id = {p["riot"].lower(): p for p in players}
     per = defaultdict(list)          # joueur -> [(t, win, champ, k, d, a, mid)]
     team_games = []                  # parties avec au moins un ami
     for mid, g in games.items():
-        if g.get("t", 0) < start_ts or g.get("r"):   # avant le challenge, ou remake
+        if g.get("t", 0) < start_ts or g.get("r") or (end_ts and g["t"] > end_ts):   # hors challenge, ou remake
             continue
         friends = [x for x in g["p"] if x[0] in by_id]
         if not friends:

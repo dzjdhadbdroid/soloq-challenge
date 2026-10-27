@@ -241,7 +241,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp
 function setDates(){
   document.getElementById("d1").textContent = fmt(START);
   document.getElementById("d2").textContent = fmt(END);
-  var now = new Date(), st = new Date(START), e = new Date(END);
+  var now = new Date(), st = new Date(START+"T00:00:00"), e = new Date(END+"T23:59:59");   // heure locale, dernier jour inclus
   var el = document.getElementById("left");
   if(now < st) el.textContent = "Commence dans " + Math.ceil((st-now)/864e5) + " j";
   else if(now > e) el.textContent = "Challenge terminé";
@@ -261,7 +261,7 @@ function render(){
     var t = TIERS.indexOf(p.tier), hi = t >= 7;
     var rankTxt = p.unranked ? "Non classé" : LBL[p.tier] + (hi ? "" : " " + ROM[p.div]);
     var last = "";
-    for(var j=0;j<(p.champs&&p.champs.length?10:0);j++){
+    for(var j=0;j<(p.champs?Math.min(10,p.champs.length):0);j++){
       var c = p.champs[j] || "?", r = p.last10[j] || "L";
       last += '<div class="ch '+(r==="W"?"w":"l")+'" title="'+esc(c)+' · '+(r==="W"?"Victoire":"Défaite")+'">'+(iconSrc(c)?'<img alt="'+esc(c)+'" src="'+iconSrc(c)+'" onerror="this.replaceWith(document.createTextNode(this.alt.slice(0,3)))">':esc(c.slice(0,3)))+'</div>';
     }
