@@ -1,5 +1,5 @@
 {
- "t": 1793132899,
+ "t": 1793133180,
  "start_ts": 1792620000,
  "end_ts": 1795388399,
  "joueurs": {
@@ -24,6 +24,28 @@
      "losses": 53
     }
    ],
+   "toutes_files": [
+    {
+     "id": "EUW1_8027184964",
+     "file": 440,
+     "fin_utc": "27/10 16:34"
+    },
+    {
+     "id": "EUW1_8026617403",
+     "file": 400,
+     "fin_utc": "26/10 22:39"
+    },
+    {
+     "id": "EUW1_8026531630",
+     "file": 400,
+     "fin_utc": "26/10 21:27"
+    },
+    {
+     "id": "EUW1_8025280650",
+     "file": 400,
+     "fin_utc": "25/10 19:18"
+    }
+   ],
    "parties_depuis_debut": 2,
    "dernieres_parties": [
     "EUW1_8024976003",
@@ -35,14 +57,6 @@
    "puuid": "eqwgFsuL",
    "entrees": [
     {
-     "queueType": "RANKED_FLEX_SR",
-     "tier": "BRONZE",
-     "rank": "IV",
-     "leaguePoints": 16,
-     "wins": 8,
-     "losses": 15
-    },
-    {
      "queueType": "RANKED_PREMADE_5x5",
      "tier": "GOLD",
      "rank": "III",
@@ -51,12 +65,42 @@
      "losses": 5
     },
     {
+     "queueType": "RANKED_FLEX_SR",
+     "tier": "BRONZE",
+     "rank": "IV",
+     "leaguePoints": 16,
+     "wins": 8,
+     "losses": 15
+    },
+    {
      "queueType": "RANKED_SOLO_5x5",
      "tier": "PLATINUM",
      "rank": "IV",
      "leaguePoints": 75,
      "wins": 269,
      "losses": 274
+    }
+   ],
+   "toutes_files": [
+    {
+     "id": "EUW1_8025686325",
+     "file": 450,
+     "fin_utc": "26/10 00:24"
+    },
+    {
+     "id": "EUW1_8025690477",
+     "file": 450,
+     "fin_utc": "26/10 00:04"
+    },
+    {
+     "id": "EUW1_8025676738",
+     "file": 450,
+     "fin_utc": "25/10 23:48"
+    },
+    {
+     "id": "EUW1_8025654613",
+     "file": 450,
+     "fin_utc": "25/10 23:34"
     }
    ],
    "parties_depuis_debut": 6,
@@ -87,6 +131,28 @@
      "losses": 3
     }
    ],
+   "toutes_files": [
+    {
+     "id": "EUW1_7868797550",
+     "file": 420,
+     "fin_utc": "28/05 18:32"
+    },
+    {
+     "id": "EUW1_7866853040",
+     "file": 400,
+     "fin_utc": "26/05 19:47"
+    },
+    {
+     "id": "EUW1_7865895710",
+     "file": 420,
+     "fin_utc": "25/05 20:02"
+    },
+    {
+     "id": "EUW1_7865835121",
+     "file": 420,
+     "fin_utc": "25/05 19:37"
+    }
+   ],
    "parties_depuis_debut": 0,
    "dernieres_parties": []
   },
@@ -101,6 +167,28 @@
      "leaguePoints": 40,
      "wins": 126,
      "losses": 111
+    }
+   ],
+   "toutes_files": [
+    {
+     "id": "EUW1_8025686325",
+     "file": 450,
+     "fin_utc": "26/10 00:24"
+    },
+    {
+     "id": "EUW1_8025690477",
+     "file": 450,
+     "fin_utc": "26/10 00:04"
+    },
+    {
+     "id": "EUW1_8025676738",
+     "file": 450,
+     "fin_utc": "25/10 23:48"
+    },
+    {
+     "id": "EUW1_8025654613",
+     "file": 450,
+     "fin_utc": "25/10 23:34"
     }
    ],
    "parties_depuis_debut": 3,
