@@ -188,9 +188,14 @@ def ingest(mid, m):
         pid = friend_by_puuid.get(x["puuid"])
         if not pid:
             pid = f'{x.get("riotIdGameName") or x.get("summonerName") or "?"}#{x.get("riotIdTagline") or ""}'.lower()
+        # [joueur, équipe, victoire, champion, kills, morts, assists,
+        #  sbires tués, dégâts aux champions, score de vision, premier sang, pentakills]
         rows.append([pid, x["teamId"], 1 if x["win"] else 0, x["championName"],
-                     x["kills"], x["deaths"], x["assists"]])
-    g = {"t": t, "d": inf.get("gameDuration", 0), "q": inf.get("queueId", 0), "p": rows}
+                     x["kills"], x["deaths"], x["assists"],
+                     x.get("totalMinionsKilled", 0) + x.get("neutralMinionsKilled", 0),
+                     x.get("totalDamageDealtToChampions", 0), x.get("visionScore", 0),
+                     1 if x.get("firstBloodKill") else 0, x.get("pentaKills", 0)])
+    g = {"v": 2, "t": t, "d": inf.get("gameDuration", 0), "q": inf.get("queueId", 0), "p": rows}
     if any(x.get("gameEndedInEarlySurrender") for x in inf["participants"]) and g["d"] < 300:
         g["r"] = 1   # remake : ne compte pas
     games[mid] = g
@@ -205,6 +210,12 @@ rest = sorted({m for i in info.values() for m in i["since"]}, key=mid_num, rever
 todo, seen = [], set()
 for m in priority + rest:
     if m not in games and m not in seen:
+        seen.add(m); todo.append(m)
+# Anciennes parties enregistrées sans les données avancées : on les re-télécharge peu à peu
+stale = sorted((m for m, g in games.items() if g.get("v", 1) < 2 and g.get("t", 0) >= START_TS),
+               key=mid_num, reverse=True)
+for m in stale:
+    if m not in seen:
         seen.add(m); todo.append(m)
 
 downloaded = failures = 0

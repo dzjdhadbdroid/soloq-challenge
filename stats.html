@@ -47,6 +47,10 @@ h2:before{content:"";width:4px;height:20px;border-radius:3px;background:var(--go
 .rec .val small{font-size:14px;font-weight:600;color:var(--mut);margin-left:6px}
 .rec .who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-top:10px}
 .rec .det{color:var(--mut);font-size:13px;margin-top:4px}
+[hidden]{display:none!important}
+.advt{margin:26px 0 12px;font-size:17px}
+.recs2{display:flex;flex-wrap:wrap;gap:12px}
+.recs2 .rec{flex:1 1 calc(25% - 12px);min-width:220px}
 .rec.big{grid-column:span 2;background:radial-gradient(260px 160px at 100% 0,color-mix(in srgb,var(--a) 28%,transparent),transparent),var(--card)}
 .rec.big .val{font-size:52px}.rec.big .ic{font-size:46px}
 
@@ -129,6 +133,8 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
   <h2 id="records">Records</h2>
   <p class="sub">Calculés sur les parties classées solo/duo depuis le début du challenge.</p>
   <div class="recs" id="recs"></div>
+  <h3 id="advtitle" class="advt" hidden>Records avancés</h3>
+  <div class="recs2" id="recs2" hidden></div>
 
   <h2 id="joueurs">Par joueur</h2>
   <p class="sub">Trié par nombre de parties jouées.</p>
@@ -177,9 +183,9 @@ function ago(sec){var m=Math.max(0,Math.round((Date.now()/1000-sec)/60));return 
 function kdaCls(k){return k>=3?"good":k<1.5?"bad":""}
 function champs(p,n){return p.champs.slice(0,n).map(function(c){return '<div class="cp">'+icon(c.champ)+'<span>'+c.games+' · '+Math.round(100*c.wins/c.games)+'%</span></div>'}).join("")}
 
-var EM = {win_streak:"🔥",loss_streak:"❄️",most_games:"🎮",troll:"🤡",death_record:"💀",kills_record:"⚔️",best_kda:"🎯"};
-var ACC = {win_streak:"#f59e0b",loss_streak:"#60a5fa",most_games:"#a78bfa",troll:"#ef4444",death_record:"#fb7185",kills_record:"#34d399",best_kda:"#f5c542"};
-var UNIT = {win_streak:"victoires d'affilée",loss_streak:"défaites d'affilée",most_games:"parties",troll:"morts / partie",death_record:"morts",kills_record:"kills",best_kda:"KDA"};
+var EM = {win_streak:"🔥",loss_streak:"❄️",most_games:"🎮",troll:"🤡",death_record:"💀",kills_record:"⚔️",best_kda:"🎯",pentas:"👑",first_blood:"🩸",farm:"🌾",damage:"💥",vision:"🙈"};
+var ACC = {win_streak:"#f59e0b",loss_streak:"#60a5fa",most_games:"#a78bfa",troll:"#ef4444",death_record:"#fb7185",kills_record:"#34d399",best_kda:"#f5c542",pentas:"#f59e0b",first_blood:"#ef4444",farm:"#34d399",damage:"#fb923c",vision:"#94a3b8"};
+var UNIT = {win_streak:"victoires d'affilée",loss_streak:"défaites d'affilée",most_games:"parties",troll:"morts / partie",death_record:"morts",kills_record:"kills",best_kda:"KDA",pentas:"pentakill(s)",first_blood:"premiers sangs",farm:"CS / min",damage:"dégâts",vision:"vision / min"};
 
 function render(){
   var s = STATS;
@@ -201,14 +207,24 @@ function render(){
     : "";
 
   // records
-  var recs = (s.records||[]).slice().sort(function(x,y){return (y.key==="troll") - (x.key==="troll")});  // le troll du mois en premier : la grille reste pleine
-  document.getElementById("recs").innerHTML = recs.length ? recs.map(function(r){
-    var v = r.key === "best_kda" ? Number(r.value).toFixed(2) : r.value;
+  var all = (s.records||[]).slice().sort(function(x,y){return (y.key==="troll") - (x.key==="troll")});  // le troll du mois en premier
+  function fmtV(r){
+    if(r.key==="best_kda") return Number(r.value).toFixed(2);
+    if(r.key==="damage") return Number(r.value).toLocaleString("fr-FR");
+    if(r.key==="farm") return Number(r.value).toFixed(1);
+    if(r.key==="vision") return Number(r.value).toFixed(2);
+    return r.value;
+  }
+  function card(r){
     return '<article class="rec'+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
       + '<div class="lab">'+esc(r.label)+'</div>'
-      + '<div class="val">'+esc(v)+'<small>'+esc(UNIT[r.key]||"")+'</small></div>'
+      + '<div class="val">'+esc(fmtV(r))+'<small>'+esc(UNIT[r.key]||"")+'</small></div>'
       + '<div class="who">'+av(r.name,pav(r.riot))+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div></article>';
-  }).join("") : '<div class="empty" style="grid-column:1/-1">Les records apparaîtront dès les premières parties classées.</div>';
+  }
+  var basic = all.filter(function(r){return !r.adv}), adv = all.filter(function(r){return r.adv});
+  document.getElementById("recs").innerHTML = basic.length ? basic.map(card).join("") : '<div class="empty" style="grid-column:1/-1">Les records apparaîtront dès les premières parties classées.</div>';
+  document.getElementById("recs2").innerHTML = adv.map(card).join("");
+  document.getElementById("recs2").hidden = document.getElementById("advtitle").hidden = !adv.length;
 
   // joueurs : tableau (ordinateur)
   document.getElementById("rows").innerHTML = list.length ? list.map(function(p){
