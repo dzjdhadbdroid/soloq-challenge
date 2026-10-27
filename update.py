@@ -67,7 +67,6 @@ config = load(Path("config.json"), {"start": "2026-10-22", "end": "2026-11-22"})
 START_TS = int(datetime.fromisoformat(config["start"]).replace(tzinfo=ZoneInfo("Europe/Paris")).timestamp())
 # fin du challenge : le dernier jour est inclus (jusqu'à 23 h 59 heure de Paris)
 END_TS = int(datetime.fromisoformat(config["end"]).replace(tzinfo=ZoneInfo("Europe/Paris")).timestamp()) + 86400 - 1
-DEBUG = {}   # diagnostic (data/debug.json)
 errors = []   # problèmes affichés sur le site
 
 
@@ -161,8 +160,6 @@ for p in players:
         else:
             tier, div, lp, w, l = "IRON", 4, 0, 0, 0
 
-        DEBUG[riot] = {"compte": f'{acc.get("gameName")}#{acc.get("tagLine")}', "puuid": puuid[:8],
-                       "entrees": [{k: e.get(k) for k in ("queueType", "tier", "rank", "leaguePoints", "wins", "losses")} for e in entries]}
         since = []
         for page in range(5):   # jusqu'à 500 parties depuis le début du challenge
             ids = get(f"{ROUTING}/lol/match/v5/matches/by-puuid/{puuid}/ids",
@@ -174,20 +171,6 @@ for p in players:
             get(f"{ROUTING}/lol/match/v5/matches/by-puuid/{puuid}/ids",
                 queue=SOLO_QUEUE, start=0, count=10) or [])
 
-        try:   # diagnostic : dernières parties toutes files confondues
-            ids_all = get(f"{ROUTING}/lol/match/v5/matches/by-puuid/{puuid}/ids", start=0, count=4) or []
-            rec = []
-            for mid_ in ids_all:
-                mm = get(f"{ROUTING}/lol/match/v5/matches/{mid_}")
-                if mm:
-                    ii = mm["info"]
-                    rec.append({"id": mid_, "file": ii.get("queueId"),
-                                "fin_utc": time.strftime("%d/%m %H:%M", time.gmtime((ii.get("gameEndTimestamp") or 0) // 1000))})
-            DEBUG[riot]["toutes_files"] = rec
-        except Exception as e_:
-            DEBUG[riot]["toutes_files"] = str(e_)
-        DEBUG[riot]["parties_depuis_debut"] = len(since)
-        DEBUG[riot]["dernieres_parties"] = since[:3]
         info[riot] = {"puuid": puuid, "last10": last10, "since": since}
         result[riot] = {"name": p["name"], "riot": riot, "tier": tier, "div": div,
                         "lp": lp, "w": w, "l": l, "champs": [], "last10": "", "unranked": unranked}
@@ -292,7 +275,6 @@ keep = {m for i in info.values() for m in i["last10"]}
 for mid in [m for m, g in games.items() if g["t"] < START_TS and m not in keep]:
     del games[mid]
 
-save("debug.json", {"t": now, "start_ts": START_TS, "end_ts": END_TS, "joueurs": DEBUG}, indent=1)
 save("games.json", games, separators=(",", ":"))
 save("history.json", history, separators=(",", ":"))
 stats = build_stats(games, players, START_TS, now, END_TS)
