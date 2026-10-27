@@ -48,6 +48,23 @@ h2:before{content:"";width:4px;height:20px;border-radius:3px;background:var(--go
 .rec .who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-top:10px}
 .rec .det{color:var(--mut);font-size:13px;margin-top:4px}
 [hidden]{display:none!important}
+.cmpbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.cmpbar select{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px;font-size:14px}.cmpbar span{color:var(--mut);font-weight:800}
+.cmp{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cmp .hd,.cmp .ln{display:grid;grid-template-columns:1fr minmax(110px,170px) 1fr;align-items:center;gap:10px;padding:11px 18px}
+.cmp .hd{padding:18px;background:rgba(255,255,255,.03)}
+.cmp .hd .pl{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;min-width:0}
+.cmp .hd .pl:last-child{justify-content:flex-end;text-align:right}
+.cmp .hd .pl span.t{overflow:hidden;text-overflow:ellipsis}
+.cmp .ln{border-top:1px solid var(--line)}
+.cmp .ln .l{color:var(--mut);font-size:13px;text-align:center}
+.cmp .ln .x{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--mut)}
+.cmp .ln .x:last-child{text-align:right}
+.cmp .ln .x.w{color:var(--gold,#f5c542);font-weight:800}
+.cmp .ln .x.w::after{content:" ✓";font-size:13px}
+.cmp .ln .x.cc{display:flex;gap:6px;flex-wrap:wrap}.cmp .ln .x.cc:last-child{justify-content:flex-end}
+.cmp .h2h{padding:12px 18px;border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:14px}
+@media(max-width:600px){.cmp .hd,.cmp .ln{grid-template-columns:1fr 1fr;padding:10px 12px}.cmp .ln .l{grid-column:1/-1;order:-1;text-align:left;font-size:12px}.cmp .hd .pl{font-size:15px}.cmp .hd>div:nth-child(2){display:none}.cmp .hd .pl{min-width:0}.cmp .ln .x{font-size:18px}}
 .advt{margin:26px 0 12px;font-size:17px}
 .recs2{display:flex;flex-wrap:wrap;gap:12px}
 .recs2 .rec{flex:1 1 calc(25% - 12px);min-width:220px}
@@ -128,7 +145,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 
 <div class="wrap" id="app" hidden>
   <div class="tiles" id="tiles"></div>
-  <div class="tabs"><a href="#records">Records</a><a href="#joueurs">Par joueur</a><a href="#duels">Vis-à-vis</a></div>
+  <div class="tabs"><a href="#records">Records</a><a href="#joueurs">Par joueur</a><a href="#compare">Comparateur</a><a href="#duels">Vis-à-vis</a></div>
 
   <h2 id="records">Records</h2>
   <p class="sub">Calculés sur les parties classées solo/duo depuis le début du challenge.</p>
@@ -143,6 +160,11 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
     <tbody id="rows"></tbody>
   </table></div>
   <div class="pcards" id="pcards"></div>
+
+  <h2 id="compare">Comparateur</h2>
+  <p class="sub">Choisis deux joueurs et compare-les côte à côte. Le meilleur de chaque ligne est mis en avant.</p>
+  <div class="cmpbar"><select id="ca" aria-label="Premier joueur"></select><span>VS</span><select id="cb" aria-label="Second joueur"></select></div>
+  <div class="cmp" id="cmp"></div>
 
   <h2 id="duels">Vis-à-vis entre potes</h2>
   <p class="sub">Les parties où deux d'entre vous se sont retrouvés : dans des camps opposés, ou dans la même équipe.</p>
@@ -186,6 +208,50 @@ function champs(p,n){return p.champs.slice(0,n).map(function(c){return '<div cla
 var EM = {win_streak:"🔥",loss_streak:"❄️",most_games:"🎮",troll:"🤡",death_record:"💀",kills_record:"⚔️",best_kda:"🎯",pentas:"👑",first_blood:"🩸",farm:"🌾",damage:"💥",vision:"🙈"};
 var ACC = {win_streak:"#f59e0b",loss_streak:"#60a5fa",most_games:"#a78bfa",troll:"#ef4444",death_record:"#fb7185",kills_record:"#34d399",best_kda:"#f5c542",pentas:"#f59e0b",first_blood:"#ef4444",farm:"#34d399",damage:"#fb923c",vision:"#94a3b8"};
 var UNIT = {win_streak:"victoires d'affilée",loss_streak:"défaites d'affilée",most_games:"parties",troll:"morts / partie",death_record:"morts",kills_record:"kills",best_kda:"KDA",pentas:"pentakill(s)",first_blood:"premiers sangs",farm:"CS / min",damage:"dégâts",vision:"vision / min"};
+
+var CMP = {a:null,b:null};
+function renderCmp(list, s){
+  var A = document.getElementById("ca"), B = document.getElementById("cb"), box = document.getElementById("cmp");
+  if(list.length < 2){A.innerHTML = B.innerHTML = ""; box.innerHTML = '<div class="empty">Il faut au moins deux joueurs avec des parties pour comparer.</div>'; return}
+  var by = {}; list.forEach(function(p){by[p.riot] = p});
+  if(!by[CMP.a]) CMP.a = list[0].riot;
+  if(!by[CMP.b] || CMP.b === CMP.a) CMP.b = list.filter(function(p){return p.riot !== CMP.a})[0].riot;
+  var opts = list.slice().sort(function(x,y){return x.name.localeCompare(y.name)});
+  function fill(el, v){el.innerHTML = opts.map(function(p){return '<option value="'+esc(p.riot)+'"'+(p.riot===v?" selected":"")+'>'+esc(p.name)+'</option>'}).join("")}
+  fill(A, CMP.a); fill(B, CMP.b);
+  var a = by[CMP.a], b = by[CMP.b];
+  function line(label, x, y, fx, better){   // better : "hi" | "lo" | null
+    var w = 0;
+    if(better && x != null && y != null && x !== y) w = (better === "hi") === (x > y) ? 1 : 2;
+    var f = fx || String;
+    return '<div class="ln"><div class="x'+(w===1?" w":"")+'">'+(x==null?"—":esc(f(x)))+'</div><div class="l">'+label+'</div><div class="x'+(w===2?" w":"")+'">'+(y==null?"—":esc(f(y)))+'</div></div>';
+  }
+  var dd = function(n){return function(v){return Number(v).toFixed(n)}};
+  var pc = function(v){return v+"%"};
+  var html = '<div class="hd"><div class="pl">'+av(a.name,a.avatar)+'<span class="t">'+esc(a.name)+'</span></div><div></div><div class="pl"><span class="t">'+esc(b.name)+'</span>'+av(b.name,b.avatar)+'</div></div>'
+    + line("Parties", a.games, b.games, null, "hi")
+    + line("Victoires – défaites", a.wins+" – "+a.losses, b.wins+" – "+b.losses)
+    + line("Winrate", a.winrate, b.winrate, pc, "hi")
+    + line("KDA", a.kda, b.kda, dd(2), "hi")
+    + line("Kills / partie", a.avg_kills, b.avg_kills, dd(1), "hi")
+    + line("Morts / partie", a.avg_deaths, b.avg_deaths, dd(1), "lo")
+    + line("Assists / partie", a.avg_assists, b.avg_assists, dd(1), "hi")
+    + line("Record de kills", a.max_kills.v, b.max_kills.v, null, "hi")
+    + line("Record de morts", a.max_deaths.v, b.max_deaths.v, null, "lo")
+    + line("Meilleure série de victoires", a.best_win_streak, b.best_win_streak, null, "hi")
+    + line("Pire série de défaites", a.best_loss_streak, b.best_loss_streak, null, "lo");
+  if(a.cs_min != null && b.cs_min != null){
+    html += line("Farm (CS / min)", a.cs_min, b.cs_min, dd(1), "hi") + line("Vision / min", a.vis_min, b.vis_min, dd(2), "hi");
+  }
+  html += '<div class="ln"><div class="x cc">'+champs(a,3)+'</div><div class="l">Champions les plus joués</div><div class="x cc">'+champs(b,3)+'</div></div>';
+  var pr = (s.pairs||[]).filter(function(p){return (p.a===a.riot&&p.b===b.riot)||(p.a===b.riot&&p.b===a.riot)})[0];
+  if(pr){
+    var sw = pr.a === a.riot, ag = pr.against, aw = sw ? ag.a_wins : ag.b_wins, bw = sw ? ag.b_wins : ag.a_wins;
+    html += '<div class="h2h">'+(ag.games ? 'En face : <b>'+esc(a.name)+' '+aw+' – '+bw+' '+esc(b.name)+'</b> ('+ag.games+' partie'+(ag.games>1?'s':'')+')' : 'Jamais croisés en face')
+      + ' · '+(pr.together.games ? 'Ensemble : '+pr.together.wins+' V sur '+pr.together.games : 'jamais dans la même équipe')+'</div>';
+  }
+  box.innerHTML = html;
+}
 
 function render(){
   var s = STATS;
@@ -244,6 +310,8 @@ function render(){
       + '<div class="foot">'+streakPill(p.streak)+'<div class="cc">'+champs(p,3)+'</div></div></div>';
   }).join("");
 
+  renderCmp(list, s);
+
   // vis-à-vis
   var sel = document.getElementById("who"), cur = sel.value;
   if(sel.options.length === 1){
@@ -269,6 +337,8 @@ function render(){
   }).join("") : '<div class="empty" style="grid-column:1/-1">'+(cur ? "Ce joueur ne s'est encore croisé avec aucun autre membre du groupe." : "Aucune partie commune pour l'instant. Dès que deux d'entre vous se croisent en classée, ça apparaît ici.")+'</div>';
 }
 
+document.getElementById("ca").addEventListener("change", function(){CMP.a = this.value; if(STATS) render()});
+document.getElementById("cb").addEventListener("change", function(){CMP.b = this.value; if(STATS) render()});
 document.getElementById("who").addEventListener("change", function(){ if(STATS) render(); });
 fetch("data/stats.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){STATS = d; render();})
   .catch(function(){
