@@ -1,0 +1,49 @@
+/* Mode éclairé : blanc, bordeaux et doré. Activé par <html data-theme="light"> (bouton ☀ / 🌙 en haut de page). */
+html[data-theme="light"]{color-scheme:light;--bg:#faf5ee;--card:#ffffff;--card2:#f6ece0;--line:#e6d6c2;--txt:#2b1218;--mut:#8a6f74;--gold:#b8892b;--bord:#6b1a2d;--win:#2f7d4f;--loss:#b3261e;--blue:#2f6fcf;--red:#b3261e;--up:#2f7d4f}
+html[data-theme="light"] body{background:radial-gradient(900px 380px at 50% -80px,#f3e1cb 0,transparent 70%),var(--bg)}
+/* bandeau bordeaux */
+html[data-theme="light"] header{position:relative;background:linear-gradient(135deg,#4f1223,#7a2037 60%,#5a1426);border-bottom:0;box-shadow:0 3px 14px rgba(74,15,31,.3);margin-bottom:5px}
+html[data-theme="light"] header::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:5px;background:linear-gradient(90deg,#8a6420,#f3d98b,#b8892b,#f3d98b,#8a6420)}
+html[data-theme="light"] .logo{color:#fff}html[data-theme="light"] .logo b{color:#f3d98b}
+html[data-theme="light"] nav a,html[data-theme="light"] .back{color:#ecd5d9}
+html[data-theme="light"] nav a.on,html[data-theme="light"] nav a:hover,html[data-theme="light"] .back:hover{background:rgba(243,217,139,.18);color:#fff}
+/* titres et accents */
+html[data-theme="light"] .hero h1,html[data-theme="light"] h1{color:var(--bord)}
+html[data-theme="light"] th{color:var(--bord);border-bottom:2px solid #d4a63a}
+html[data-theme="light"] .pill{background:#fff;border-color:#d4a63a;color:var(--bord)}
+html[data-theme="light"] .pill b{color:var(--gold)}
+html[data-theme="light"] .note{background:#fbf1d9;border-color:#e3c777;color:#7a5a12}
+html[data-theme="light"] .warn{background:#fdeaea;border-color:#e3a3a3;color:#8a1c1c}
+html[data-theme="light"] .bar input,html[data-theme="light"] .bar select,html[data-theme="light"] .cmpbar select{background:#fff;border-color:#d9c3a6}
+/* tableau / cartes */
+html[data-theme="light"] tbody tr:hover{background:#fbf1ea}
+html[data-theme="light"] .modal{background:rgba(40,8,16,.6)}
+html[data-theme="light"] .dlg{border-color:#d4a63a}
+html[data-theme="light"] .x:hover{background:#f3e9df}
+html[data-theme="light"] .pl a:hover{color:var(--bord)}
+html[data-theme="light"] .dv{background:var(--bord);color:#fff;border-color:#d4a63a}
+html[data-theme="light"] .ch,html[data-theme="light"] .ci,html[data-theme="light"] .champ,html[data-theme="light"] .sp div{background:#f3e9df}
+html[data-theme="light"] .ch{color:var(--bord)}
+html[data-theme="light"] .pl b a.live{color:#1e7a43;background:rgba(34,197,94,.12)}
+html[data-theme="light"] .pl b a.live:hover{background:rgba(34,197,94,.24);color:#14532d}
+html[data-theme="light"] .mb{background:#f1d9d9}
+html[data-theme="light"] .pill.up{color:#1e7a43}html[data-theme="light"] .pill.dn{color:#b3261e}
+html[data-theme="light"] .tabs a:hover{border-color:#d4a63a}
+html[data-theme="light"] .cmp .hd{background:#faf2e8}
+html[data-theme="light"] .pc .grid div{background:#f6ece0}
+html[data-theme="light"] .rec{background:radial-gradient(180px 130px at 100% 0,color-mix(in srgb,var(--a) 14%,transparent),transparent),var(--card)}
+html[data-theme="light"] .rec.big{background:radial-gradient(260px 160px at 100% 0,color-mix(in srgb,var(--a) 22%,transparent),transparent),var(--card)}
+html[data-theme="light"] .cmp .ln .x.w{color:var(--bord)}
+/* partie en cours */
+html[data-theme="light"] .team.b{background:rgba(47,111,207,.07);border-color:rgba(47,111,207,.3)}
+html[data-theme="light"] .team.r{background:rgba(179,38,30,.06);border-color:rgba(179,38,30,.3)}
+html[data-theme="light"] .team.b h2{color:#2455a4}html[data-theme="light"] .team.r h2{color:#9b1c14}
+/* graphique de LP */
+html[data-theme="light"] svg.chart line[stroke="#233248"]{stroke:#e6d6c2}
+html[data-theme="light"] svg.chart circle[fill="#0e141e"]{fill:#fff}
+html[data-theme="light"] svg.chart text{fill:#8a6f74}
+/* bouton de thème */
+.themebtn{margin-left:auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#f3d98b;border-radius:99px;padding:7px 14px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.themebtn:hover{background:rgba(243,217,139,.18)}
+html[data-theme="light"] .themebtn{background:rgba(255,255,255,.1);border-color:rgba(243,217,139,.6)}
+html:not([data-theme="light"]) .themebtn{color:var(--gold,#f5c542);border-color:var(--line,#233248);background:transparent}
