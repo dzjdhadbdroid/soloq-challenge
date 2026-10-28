@@ -56,3 +56,4 @@ html[data-theme="light"] .rec::after{opacity:.09}
 html[data-theme="light"] h2{border-bottom-color:#e6d6c2}
 html[data-theme="light"] .rec .val{text-shadow:none}
 html[data-theme="light"] .lpd.up{color:#2f7d4f}html[data-theme="light"] .lpd.dn{color:#b3261e}
+html[data-theme="light"] td.lpm .v{color:#2f7d4f}
