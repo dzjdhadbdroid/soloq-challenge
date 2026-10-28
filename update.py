@@ -294,6 +294,10 @@ for riot in list(lp_delta):
         lp_delta[riot] = {m: d for m, d in lp_delta[riot].items() if m in keep_ or not info.get(riot)}
 
 for riot in info:
+    ds_ = list(lp_delta.get(riot, {}).values())
+    gains_, losses_ = [d for d in ds_ if d > 0], [d for d in ds_ if d < 0]
+    result[riot]["lpavg"] = {"win": round(sum(gains_) / len(gains_), 1) if gains_ else None, "nw": len(gains_),
+                             "loss": round(sum(losses_) / len(losses_), 1) if losses_ else None, "nl": len(losses_)}
     result[riot]["lpd"] = [lp_delta.get(riot, {}).get(m) for m in result[riot].get("ids", [])]
     result[riot].pop("ids", None)
 
