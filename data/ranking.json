@@ -1,5 +1,5 @@
 {
- "updated": 1793225138,
+ "updated": 1793226505,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -126,29 +126,29 @@
    "riot": "ounf ding#koich",
    "tier": "EMERALD",
    "div": 3,
-   "lp": 60,
+   "lp": 40,
    "w": 127,
-   "l": 111,
+   "l": 112,
    "champs": [
+    "Viktor",
     "Akali",
     "Akali",
     "Akali",
     "Leblanc",
     "Akali",
     "Leblanc",
-    "Akali",
     "Akali",
     "Akali"
    ],
-   "last10": "WLWWLLWWL",
+   "last10": "LWLWWLLWW",
    "unranked": false,
    "lplast": {
     "win": 20,
-    "loss": null
+    "loss": -20
    },
    "lpd": [
+    -20,
     20,
-    null,
     null,
     null,
     null,
