@@ -55,6 +55,7 @@ rank_cache = load(D / "rank_cache.json", {}) if same_key else {}
 old = load(D / "live.json", {"games": {}, "players": {}})
 
 # 1. Qui est en partie ?
+ignored = {}   # riot -> file de la partie ignorée (hors solo/duo)
 in_game = {}   # riot -> données de la partie
 failed = False
 for p in players:
@@ -72,6 +73,7 @@ for p in players:
         if g.get("gameQueueConfigId") == SOLO_QUEUE:   # seulement la classée solo/duo (pas draft, aram, flex…)
             in_game[riot] = g
         else:
+            ignored[riot] = g.get("gameQueueConfigId")
             print(f"{riot} est en partie hors solo/duo (file {g.get('gameQueueConfigId')}) : ignorée")
     elif code != 404:
         print(f"! erreur {code} pour {riot}")
@@ -127,9 +129,9 @@ for riot, g in in_game.items():
     games[gid] = {"id": gid, "queue": g.get("gameQueueConfigId", 0),
                   "start": g.get("gameStartTime", 0), "players": parts}
 
-new = {"v": 2, "games": games, "players": by_player}
+new = {"v": 2, "games": games, "players": by_player, "ignored": ignored}
 # On n'écrit que si quelque chose a changé (sinon GitHub se remplirait de commits inutiles)
-if new != {"v": old.get("v"), "games": old.get("games"), "players": old.get("players")}:
+if new != {"v": old.get("v"), "games": old.get("games"), "players": old.get("players"), "ignored": old.get("ignored", {})}:
     new["checked"] = int(time.time())
     (D / "live.json").write_text(json.dumps(new, ensure_ascii=False), encoding="utf-8")
     print("live.json mis à jour :", list(by_player) or "personne en partie")
