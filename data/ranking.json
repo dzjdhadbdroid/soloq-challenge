@@ -1,5 +1,5 @@
 {
- "updated": 1793181521,
+ "updated": 1793181705,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -27,6 +27,12 @@
    ],
    "last10": "WWLLLLLLLL",
    "unranked": false,
+   "lpavg": {
+    "win": null,
+    "nw": 0,
+    "loss": null,
+    "nl": 0
+   },
    "lpd": [
     null,
     null,
@@ -62,6 +68,12 @@
    ],
    "last10": "LLWLLWLLW",
    "unranked": false,
+   "lpavg": {
+    "win": null,
+    "nw": 0,
+    "loss": null,
+    "nl": 0
+   },
    "lpd": [
     null,
     null,
@@ -96,6 +108,12 @@
    ],
    "last10": "WLLWLLLWL",
    "unranked": false,
+   "lpavg": {
+    "win": null,
+    "nw": 0,
+    "loss": null,
+    "nl": 0
+   },
    "lpd": [
     null,
     null,
@@ -130,6 +148,12 @@
    ],
    "last10": "LWWLLWWLL",
    "unranked": false,
+   "lpavg": {
+    "win": null,
+    "nw": 0,
+    "loss": null,
+    "nl": 0
+   },
    "lpd": [
     null,
     null,
