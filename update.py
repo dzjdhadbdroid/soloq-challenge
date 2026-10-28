@@ -248,19 +248,56 @@ print(f"{downloaded} nouvelles parties téléchargées, {max(0, len(todo) - down
 
 # ---------- 3. 10 dernières parties de chaque joueur ----------
 for riot, i in info.items():
-    champs, last10 = [], ""
+    champs, last10, ids_l = [], "", []
     for mid in i["last10"]:
         g = games.get(mid)
         if not g or g.get("r"):
             continue
         me = next((x for x in g["p"] if x[0] == riot.lower()), None)
         if me:
-            champs.append(me[3])
+            champs.append(me[3]); ids_l.append(mid)
             last10 += "W" if me[2] else "L"
     result[riot]["champs"], result[riot]["last10"] = champs, last10
+    result[riot]["ids"] = ids_l
+
+# ---------- 3b. LP gagnés / perdus par partie ----------
+# Riot ne donne pas ce chiffre : on le déduit. Si le total de parties classées d'un joueur a augmenté d'exactement 1
+# depuis notre dernier passage, la variation de LP vient de cette partie (sinon on ne peut pas trancher, on ne dit rien).
+TIERS_ = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"]
+
+
+def lp_score(tier, div, lp):
+    i = TIERS_.index(tier)
+    return 2800 + lp if i >= 7 else i * 400 + (4 - div) * 100 + lp
+
+
+lp_track = load(D / "lp_track.json", {})
+lp_delta = load(D / "lp_delta.json", {})
+now = int(time.time())
+for riot in fresh_riots:
+    r = result[riot]
+    if r["unranked"]:
+        continue
+    sc, wl = lp_score(r["tier"], r["div"], r["lp"]), r["w"] + r["l"]
+    prev = lp_track.get(riot)
+    ids_ = info[riot]["since"]
+    if prev and wl == prev["wl"] + 1 and ids_ and ids_[0] not in lp_delta.get(riot, {}):
+        g_ = games.get(ids_[0])
+        if not g_ or g_["t"] >= prev["t"] - 600:   # la partie doit être postérieure à notre dernier passage
+            lp_delta.setdefault(riot, {})[ids_[0]] = sc - prev["s"]
+    lp_track[riot] = {"wl": wl, "s": sc, "t": now}
+for riot in list(lp_delta):
+    if riot not in {p_["riot"] for p_ in players}:
+        del lp_delta[riot]
+    else:   # on ne garde que les parties récentes
+        keep_ = set(info.get(riot, {}).get("since", [])) | set(info.get(riot, {}).get("last10", []))
+        lp_delta[riot] = {m: d for m, d in lp_delta[riot].items() if m in keep_ or not info.get(riot)}
+
+for riot in info:
+    result[riot]["lpd"] = [lp_delta.get(riot, {}).get(m) for m in result[riot].get("ids", [])]
+    result[riot].pop("ids", None)
 
 # ---------- 4. historique des LP ----------
-now = int(time.time())
 for riot in fresh_riots:
     r = result[riot]
     if r["unranked"] or now > END_TS:   # après la fin, la courbe est figée
@@ -275,6 +312,8 @@ keep = {m for i in info.values() for m in i["last10"]}
 for mid in [m for m, g in games.items() if g["t"] < START_TS and m not in keep]:
     del games[mid]
 
+save("lp_track.json", lp_track, separators=(",", ":"))
+save("lp_delta.json", lp_delta, separators=(",", ":"))
 save("games.json", games, separators=(",", ":"))
 save("history.json", history, separators=(",", ":"))
 stats = build_stats(games, players, START_TS, now, END_TS)
