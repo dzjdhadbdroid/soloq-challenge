@@ -142,6 +142,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
     <div id="mtip" class="tip">&nbsp;</div>
     <div id="mchart"></div>
     <p class="note2" id="mnote"></p>
+    <button type="button" class="cbtn cardbtn" id="mcard">🃏 Carte joueur</button>
   </div>
 </div>
 
@@ -346,6 +347,7 @@ function attachHover(m){
   rect.addEventListener("pointerleave", function(){cur.style.display="none"; tip.innerHTML = "&nbsp;";});
 }
 function openPlayer(riot){
+  CARD_RIOT = riot;
   var p = PLAYERS.filter(function(x){return x.riot === riot})[0]; if(!p) return;
   var pts = (HIST[riot] || []).slice().sort(function(a,b){return a[0]-b[0]});
   var hi = TIERS.indexOf(p.tier) >= 7, color = COL[p.tier] || "#f5c542";
@@ -396,11 +398,13 @@ document.getElementById("rows").addEventListener("keydown", function(e){
 });
 document.getElementById("q").addEventListener("input", render);
 document.getElementById("sort").addEventListener("change", render);
+document.getElementById("mcard").addEventListener("click", function(){ if(CARD_RIOT) showCard(CARD_RIOT); });
 loadData();
 loadExtra();
 loadLive();
 setInterval(loadLive, 60000);
 loadDD();
 </script>
+<script src="card.js"></script>
 </body>
 </html>
