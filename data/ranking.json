@@ -1,5 +1,5 @@
 {
- "updated": 1793180688,
+ "updated": 1793181521,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -27,6 +27,18 @@
    ],
    "last10": "WWLLLLLLLL",
    "unranked": false,
+   "lpd": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
    "avatar": "avatars/PURPLE.png?v=a642aa84"
   },
   {
@@ -50,6 +62,17 @@
    ],
    "last10": "LLWLLWLLW",
    "unranked": false,
+   "lpd": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
    "avatar": "avatars/KURO.png?v=8078ca45"
   },
   {
@@ -73,6 +96,17 @@
    ],
    "last10": "WLLWLLLWL",
    "unranked": false,
+   "lpd": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
    "avatar": "avatars/FLO.png?v=3bc65547"
   },
   {
@@ -96,6 +130,17 @@
    ],
    "last10": "LWWLLWWLL",
    "unranked": false,
+   "lpd": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
    "avatar": "avatars/BILOU.png?v=efe70524"
   }
  ]
