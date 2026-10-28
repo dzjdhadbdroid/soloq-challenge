@@ -1,5 +1,5 @@
 {
- "updated": 1793222597,
+ "updated": 1793222859,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -27,11 +27,9 @@
    ],
    "last10": "WWLLLLLLLL",
    "unranked": false,
-   "lpavg": {
+   "lplast": {
     "win": null,
-    "nw": 0,
-    "loss": null,
-    "nl": 0
+    "loss": null
    },
    "lpd": [
     null,
@@ -68,11 +66,9 @@
    ],
    "last10": "LLLWLLWLL",
    "unranked": false,
-   "lpavg": {
+   "lplast": {
     "win": null,
-    "nw": 0,
-    "loss": -21.0,
-    "nl": 1
+    "loss": -21
    },
    "lpd": [
     -21,
@@ -108,11 +104,9 @@
    ],
    "last10": "WLLWLLLWL",
    "unranked": false,
-   "lpavg": {
+   "lplast": {
     "win": null,
-    "nw": 0,
-    "loss": null,
-    "nl": 0
+    "loss": null
    },
    "lpd": [
     null,
@@ -148,11 +142,9 @@
    ],
    "last10": "LWWLLWWLL",
    "unranked": false,
-   "lpavg": {
+   "lplast": {
     "win": null,
-    "nw": 0,
-    "loss": null,
-    "nl": 0
+    "loss": null
    },
    "lpd": [
     null,
