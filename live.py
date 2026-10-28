@@ -12,6 +12,7 @@ H = {"X-Riot-Token": KEY}
 REGION = "https://euw1.api.riotgames.com"
 ROUTING = "https://europe.api.riotgames.com"
 D = Path("data"); D.mkdir(exist_ok=True)
+SOLO_QUEUE = 420  # classée solo/duo
 RANK_TTL = 3600  # on ne redemande le rang d'un joueur qu'une fois par heure
 ROMAN = {"I": 1, "II": 2, "III": 3, "IV": 4}
 
@@ -68,7 +69,10 @@ for p in players:
             continue
     code, g = get(f"{REGION}/lol/spectator/v5/active-games/by-summoner/{puuids[riot]}")
     if code == 200:
-        in_game[riot] = g
+        if g.get("gameQueueConfigId") == SOLO_QUEUE:   # seulement la classée solo/duo (pas draft, aram, flex…)
+            in_game[riot] = g
+        else:
+            print(f"{riot} est en partie hors solo/duo (file {g.get('gameQueueConfigId')}) : ignorée")
     elif code != 404:
         print(f"! erreur {code} pour {riot}")
         failed = True
