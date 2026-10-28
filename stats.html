@@ -99,6 +99,13 @@ td.n b{display:block;font-size:15px}td.n small{color:var(--mut);font-size:12px}
 .pill.up{color:var(--up);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08)}
 .pill.dn{color:#ff8a8a;border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.08)}
 .cc{display:flex;gap:8px}
+.form{display:flex;gap:3px;flex-wrap:wrap;max-width:150px}.form i{width:8px;height:18px;border-radius:3px;background:var(--loss);opacity:.85}.form i.w{background:var(--up);height:18px}
+.form i:last-child{outline:2px solid var(--gold);outline-offset:1px}
+th.s{cursor:pointer;user-select:none;white-space:nowrap}th.s:hover{color:var(--txt)}th.s[aria-sort="descending"]::after{content:" ▼";color:var(--gold)}th.s[aria-sort="ascending"]::after{content:" ▲";color:var(--gold)}
+.rec{cursor:pointer}.rec .more{color:var(--mut);font-size:12px;margin-top:10px;display:flex;align-items:center;gap:4px}.rec .more::after{content:"▾";transition:transform .2s}.rec.open .more::after{transform:rotate(180deg)}
+.rec .lst{display:none;margin:12px 0 0;padding:10px 0 0;border-top:1px solid var(--line);list-style:none}.rec.open .lst{display:grid;gap:6px}
+.rec .lst li{display:flex;align-items:center;gap:8px;font-size:14px}.rec .lst li b{margin-left:auto;font-variant-numeric:tabular-nums}.rec .lst li .n{width:18px;color:var(--mut);font-weight:700;text-align:center}.rec .lst li.me b,.rec .lst li:first-child b{color:var(--a)}
+.rec .lst .av{width:24px;height:24px;font-size:11px}
 .cp{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut)}
 .ci{width:38px;height:38px;border-radius:9px;background:#0b1220;border:2px solid var(--line);overflow:hidden;display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--mut)}
 .ci img{width:100%;height:100%;object-fit:cover;display:block}
@@ -164,9 +171,9 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
   <div class="recs2" id="recs2" hidden></div>
 
   <h2 id="joueurs">Par joueur</h2>
-  <p class="sub">Trié par nombre de parties jouées.</p>
+  <p class="sub">Clique sur un titre de colonne pour trier.</p>
   <div class="scroll"><table>
-    <thead><tr><th>Joueur</th><th>Parties</th><th>V – D</th><th>Winrate</th><th>KDA</th><th>Morts / partie</th><th>Meilleure série</th><th>Série en cours</th><th>Champions les plus joués</th></tr></thead>
+    <thead><tr><th class="s" data-k="name" tabindex="0">Joueur</th><th class="s" data-k="games" tabindex="0">Parties</th><th class="s" data-k="wins" tabindex="0">V – D</th><th class="s" data-k="winrate" tabindex="0">Winrate</th><th class="s" data-k="kda" tabindex="0">KDA</th><th class="s" data-k="avg_deaths" tabindex="0">Morts / partie</th><th class="s" data-k="best_win_streak" tabindex="0">Meilleure série</th><th class="s" data-k="streak" tabindex="0">Série en cours</th><th>Forme (20 dernières)</th><th>Champions les plus joués</th></tr></thead>
     <tbody id="rows"></tbody>
   </table></div>
   <div class="pcards" id="pcards"></div>
@@ -221,6 +228,8 @@ var ACC = {win_streak:"#f59e0b",loss_streak:"#60a5fa",most_games:"#a78bfa",troll
 var UNIT = {win_streak:"victoires d'affilée",loss_streak:"défaites d'affilée",most_games:"parties",troll:"morts / partie",death_record:"morts",kills_record:"kills",best_kda:"KDA",pentas:"pentakill(s)",first_blood:"premiers sangs",farm:"CS / min",damage:"dégâts",vision:"vision / min"};
 
 var CMP = {a:null,b:null};
+var SORT = {k:"games", dir:-1}, OPEN = {};
+function formHtml(f){return f ? '<div class="form" title="Du plus ancien au plus récent (le dernier est entouré)">'+f.split("").map(function(c){return '<i class="'+(c==="W"?"w":"")+'"></i>'}).join("")+"</div>" : "—"}
 function renderCmp(list, s){
   var A = document.getElementById("ca"), B = document.getElementById("cb"), box = document.getElementById("cmp");
   if(list.length < 2){A.innerHTML = B.innerHTML = ""; box.innerHTML = '<div class="empty">Il faut au moins deux joueurs avec des parties pour comparer.</div>'; return}
@@ -271,7 +280,13 @@ function render(){
     ? s.games + " parties classées depuis le début du challenge · mis à jour " + ago(s.updated)
     : "Aucune partie classée enregistrée pour l'instant.";
 
-  var list = Object.keys(s.players).map(function(k){var p = s.players[k]; p.riot = k; return p}).sort(function(a,b){return b.games-a.games});
+  var list = Object.keys(s.players).map(function(k){var p = s.players[k]; p.riot = k; return p});
+  list.sort(function(a,b){
+    var k = SORT.k, d = SORT.dir, x = a[k], y = b[k];
+    var c = k === "name" ? String(x).localeCompare(String(y)) : (x - y);
+    return (c ? c * d : a.name.localeCompare(b.name)) || 0;
+  });
+  document.querySelectorAll("th.s").forEach(function(th){th.setAttribute("aria-sort", th.getAttribute("data-k") === SORT.k ? (SORT.dir > 0 ? "ascending" : "descending") : "none")});
 
   // chiffres du groupe
   var G = 0, W = 0, D = 0, bestS = null;
@@ -293,10 +308,12 @@ function render(){
     return r.value;
   }
   function card(r){
-    return '<article class="rec'+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
+    return '<article tabindex="0" data-key="'+r.key+'" class="rec'+(OPEN[r.key]?" open":"")+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
       + '<div class="lab">'+esc(r.label)+'</div>'
       + '<div class="val">'+esc(fmtV(r))+'<small>'+esc(UNIT[r.key]||"")+'</small></div>'
-      + '<div class="who">'+av(r.name,pav(r.riot))+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div></article>';
+      + '<div class="who">'+av(r.name,pav(r.riot))+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div>'
+      + ((r.all||[]).length > 1 ? '<div class="more">Voir tout le classement</div><ol class="lst">'+r.all.map(function(x,i){return '<li><span class="n">'+(i+1)+'</span>'+av(x.name,pav(x.riot))+esc(x.name)+'<b>'+esc(fmtV({key:r.key,value:x.value}))+'</b></li>'}).join("")+'</ol>' : '')
+      + '</article>';
   }
   var basic = all.filter(function(r){return !r.adv}), adv = all.filter(function(r){return r.adv});
   document.getElementById("recs").innerHTML = basic.length ? basic.map(card).join("") : '<div class="empty" style="grid-column:1/-1">Les records apparaîtront dès les premières parties classées.</div>';
@@ -310,15 +327,15 @@ function render(){
       + '<td class="wr"><b>'+p.winrate+'%</b><div class="mb"><i style="width:'+p.winrate+'%"></i></div></td>'
       + '<td><span class="kda '+kdaCls(p.kda)+'">'+Number(p.kda).toFixed(2)+'</span><span class="sm">'+p.avg_kills+' / '+p.avg_deaths+' / '+p.avg_assists+'</span></td>'
       + '<td>'+p.avg_deaths+'</td><td>🔥 '+p.best_win_streak+' V<span class="sm">❄️ '+p.best_loss_streak+' D</span></td>'
-      + '<td>'+streakPill(p.streak)+'</td><td><div class="cc">'+champs(p,3)+'</div></td></tr>';
-  }).join("") : '<tr><td colspan="9"><div class="empty">Pas encore de parties.</div></td></tr>';
+      + '<td>'+streakPill(p.streak)+'</td><td>'+formHtml(p.form)+'</td><td><div class="cc">'+champs(p,3)+'</div></td></tr>';
+  }).join("") : '<tr><td colspan="10"><div class="empty">Pas encore de parties.</div></td></tr>';
 
   // joueurs : cartes (téléphone)
   document.getElementById("pcards").innerHTML = list.map(function(p){
     return '<div class="pc"><div class="top">'+av(p.name,p.avatar)+'<div class="nm"><b>'+esc(p.name)+'</b><small>'+esc(p.riot)+'</small></div><div class="big">'+p.winrate+'%</div></div>'
       + '<div class="grid"><div>'+p.games+'<small>parties</small></div><div><span class="v">'+p.wins+'</span>–<span class="d">'+p.losses+'</span><small>V – D</small></div>'
       + '<div><span class="kda '+kdaCls(p.kda)+'">'+Number(p.kda).toFixed(2)+'</span><small>KDA</small></div><div>'+p.avg_deaths+'<small>morts/partie</small></div></div>'
-      + '<div class="foot">'+streakPill(p.streak)+'<div class="cc">'+champs(p,3)+'</div></div></div>';
+      + '<div class="foot">'+streakPill(p.streak)+'<div class="cc">'+champs(p,3)+'</div></div><div style="margin-top:10px">'+formHtml(p.form)+'</div></div>';
   }).join("");
 
   renderCmp(list, s);
@@ -351,6 +368,13 @@ function render(){
 // le lien « Comparateur » de la barre ouvre le menu
 function openCmp(){ if(location.hash === "#compare"){ var d = document.getElementById("compare"); d.open = true; d.scrollIntoView(); } }
 window.addEventListener("hashchange", openCmp);
+// cartes de records : un clic déplie le classement complet
+function toggleRec(card){ var o = card.classList.toggle("open"); OPEN[card.getAttribute("data-key")] = o; card.setAttribute("aria-expanded", o); }
+document.addEventListener("click", function(e){ var c = e.target.closest(".rec"); if(c && c.querySelector(".lst")) toggleRec(c); });
+document.addEventListener("keydown", function(e){ if((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("rec")){ e.preventDefault(); toggleRec(e.target); } });
+// tri du tableau
+function sortBy(th){ var k = th.getAttribute("data-k"); SORT = SORT.k === k ? {k:k, dir:-SORT.dir} : {k:k, dir:k === "name" ? 1 : -1}; if(STATS) render(); }
+document.querySelectorAll("th.s").forEach(function(th){ th.addEventListener("click", function(){sortBy(th)}); th.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); sortBy(th); } }); });
 document.getElementById("ca").addEventListener("change", function(){CMP.a = this.value; if(STATS) render()});
 document.getElementById("cb").addEventListener("change", function(){CMP.b = this.value; if(STATS) render()});
 document.getElementById("who").addEventListener("change", function(){ if(STATS) render(); });

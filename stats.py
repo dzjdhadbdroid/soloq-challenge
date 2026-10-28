@@ -73,6 +73,7 @@ def build_stats(games, players, start_ts, now, end_ts=None):
             "champs": [{"champ": c, "games": v[0], "wins": v[1]} for c, v in top],
             "max_deaths": {"v": most_deaths[4], "champ": most_deaths[2], "t": most_deaths[0]},
             "max_kills": {"v": most_kills[3], "champ": most_kills[2], "t": most_kills[0]},
+            "form": "".join("W" if r[1] else "L" for r in rows[-20:]),   # 20 dernières parties, de la plus ancienne à la plus récente
             "n_adv": n_adv,
             "cs_min": round(sum(r[7][0] for r in adv) / mins, 1) if mins else None,
             "vis_min": round(sum(r[7][2] for r in adv) / mins, 2) if mins else None,
@@ -88,9 +89,11 @@ def build_stats(games, players, start_ts, now, end_ts=None):
         items = [(riot, s) for riot, s in items if value(s) is not None]
         if not items:
             return None
-        riot, s = (max if reverse else min)(items, key=lambda it: (value(it[1]), -ord(it[0][0])))
+        ordered = sorted(items, key=lambda it: (value(it[1]), -ord(it[0][0])), reverse=reverse)
+        riot, s = ordered[0]
         return {"key": key, "label": label, "riot": riot, "name": s["name"],
-                "value": value(s), "detail": detail(s) if detail else "", "adv": adv}
+                "value": value(s), "detail": detail(s) if detail else "", "adv": adv,
+                "all": [{"riot": r, "name": x["name"], "value": value(x)} for r, x in ordered]}
 
     allp = list(out_players.items())
     enough = [it for it in allp if it[1]["games"] >= MIN_GAMES] or allp
