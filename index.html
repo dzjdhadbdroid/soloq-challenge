@@ -288,9 +288,9 @@ function render(){
     var last = "";
     for(var j=0;j<(p.champs?Math.min(10,p.champs.length):0);j++){
       var c = p.champs[j] || "?", r = p.last10[j] || "L";
-      var dl = p.lpd ? p.lpd[j] : null, anyd = p.lpd && p.lpd.some(function(x){return x!=null});
+      var dl = p.lpd ? p.lpd[j] : null;
       last += '<div class="chw"><div class="ch '+(r==="W"?"w":"l")+'" title="'+esc(c)+' · '+(r==="W"?"Victoire":"Défaite")+(dl!=null?" · "+(dl>0?"+":"")+dl+" LP":"")+'">'+(iconSrc(c)?'<img alt="'+esc(c)+'" src="'+iconSrc(c)+'" onerror="this.replaceWith(document.createTextNode(this.alt.slice(0,3)))">':esc(c.slice(0,3)))+'</div>'
-        + (anyd ? '<small class="lpd '+(dl==null?'':dl>0?'up':dl<0?'dn':'')+'">'+(dl==null?'':(dl>0?'+':dl<0?'−':'')+Math.abs(dl))+'</small>' : '')+'</div>';
+        +'</div>';
     }
     if(!last) last='<span style="color:var(--mut)">—</span>';
     html += '<tr class="clk" tabindex="0" data-riot="'+esc(p.riot)+'"><td class="rk">'+(i+1)+'</td>'
