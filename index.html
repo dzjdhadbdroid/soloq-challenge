@@ -143,7 +143,7 @@ td.lpm span{display:block;font-weight:700;font-size:13px;white-space:nowrap}td.l
   <p class="hint">Clique sur un joueur pour voir l'évolution de ses LP.</p>
   <div class="scroll">
   <table>
-    <thead><tr><th>#</th><th>Joueur</th><th>Elo</th><th>Matchs</th><th>Victoires</th><th>Défaites</th><th>Winrate</th><th title="Moyenne de LP gagnés par victoire et perdus par défaite">LP moy. (+ / −)</th><th>10 dernières parties</th><th></th></tr></thead>
+    <thead><tr><th>#</th><th>Joueur</th><th>Elo</th><th>Matchs</th><th>Victoires</th><th>Défaites</th><th>Winrate</th><th title="LP gagnés à la dernière victoire et perdus à la dernière défaite">Derniers LP (+ / −)</th><th>10 dernières parties</th><th></th></tr></thead>
     <tbody id="rows"></tbody>
   </table>
   </div>
@@ -248,9 +248,9 @@ function loadLive(){
   fetch("data/live.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){LIVE=d;render()}).catch(function(){});
 }
 function lpAvg(p){
-  var a = p.lpavg; if(!a || (a.win == null && a.loss == null)) return '<span class="lpm0" title="Calculé à partir des parties jouées depuis le début du suivi : disponible dès la première partie suivie">—</span>';
-  return '<span class="v" title="Moyenne sur '+a.nw+' victoire(s) suivie(s)">'+(a.win != null ? "+"+a.win+" LP" : "—")+'</span>'
-       + '<span class="d" title="Moyenne sur '+a.nl+' défaite(s) suivie(s)">'+(a.loss != null ? "−"+Math.abs(a.loss)+" LP" : "—")+'</span>';
+  var a = p.lplast; if(!a || (a.win == null && a.loss == null)) return '<span class="lpm0" title="Disponible dès la première partie suivie après le début du suivi">—</span>';
+  return '<span class="v" title="LP gagnés lors de la dernière victoire suivie">'+(a.win != null ? "+"+a.win+" LP" : "—")+'</span>'
+       + '<span class="d" title="LP perdus lors de la dernière défaite suivie">'+(a.loss != null ? "−"+Math.abs(a.loss)+" LP" : "—")+'</span>';
 }
 function games(p){return p.w+p.l}
 function wr(p){return games(p) ? Math.round(p.w/games(p)*100) : 0}
@@ -299,7 +299,7 @@ function render(){
       + '<div class="lp">'+rankTxt+'<small>'+(p.unranked?"—":p.lp+" LP")+'</small></div></div></td>'
       + '<td data-l="Matchs">'+games(p)+'</td><td class="v" data-l="Victoires">'+p.w+'</td><td class="d" data-l="Défaites">'+p.l+'</td>'
       + '<td class="wr" data-l="Winrate">'+wr(p)+'%</td>'
-      + '<td class="lpm" data-l="LP moy. (+ / −)">'+lpAvg(p)+'</td><td><div class="last">'+last+'</div></td>'
+      + '<td class="lpm" data-l="Derniers LP (+ / −)">'+lpAvg(p)+'</td><td><div class="last">'+last+'</div></td>'
       + '<td class="sh"><button type="button" class="cardico" data-card="'+esc(p.riot)+'" title="Partager la carte de '+esc(p.name)+'" aria-label="Partager la carte de '+esc(p.name)+'">'+SHARE_SVG+'<span class="lbl">Partager la carte</span></button></td></tr>';
   });
   document.getElementById("rows").innerHTML = html;
