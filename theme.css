@@ -47,3 +47,11 @@ html[data-theme="light"] svg.chart text{fill:#8a6f74}
 .themebtn:hover{background:rgba(243,217,139,.18)}
 html[data-theme="light"] .themebtn{background:rgba(255,255,255,.1);border-color:rgba(243,217,139,.6)}
 html:not([data-theme="light"]) .themebtn{color:var(--gold,#f5c542);border-color:var(--line,#233248);background:transparent}
+html[data-theme="light"] .hero h1{background:linear-gradient(180deg,#6b1a2d,#4a0f1f);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme="light"] .hero p{background:#fff;border-color:#d9c3a6}
+html[data-theme="light"] .tile{background:#fff;border-top-color:#d4a63a}
+html[data-theme="light"] .tabs a.on{background:var(--bord);color:#fff;border-color:var(--bord)}
+html[data-theme="light"] .rec .who{background:rgba(107,26,45,.06)}
+html[data-theme="light"] .rec::after{opacity:.09}
+html[data-theme="light"] h2{border-bottom-color:#e6d6c2}
+html[data-theme="light"] .rec .val{text-shadow:none}

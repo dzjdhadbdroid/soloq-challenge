@@ -146,6 +146,38 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
   .pairs{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rec{transition:none}}
+
+/* ===== finitions visuelles ===== */
+.hero{padding:46px 16px 10px;position:relative}
+.hero h1{font-size:clamp(32px,6vw,48px);font-weight:800;letter-spacing:-.5px;background:linear-gradient(180deg,#fff 30%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{display:inline-block;margin-top:6px;padding:6px 16px;border-radius:99px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:14px}
+.tiles{margin-top:30px}
+.tile{position:relative;overflow:hidden;padding:16px 18px 16px 18px;border-top:3px solid var(--gold);background:linear-gradient(160deg,var(--card2,var(--card)),var(--card));transition:transform .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.28)}
+.tile::after{content:attr(data-i);position:absolute;right:10px;bottom:-6px;font-size:54px;opacity:.1;line-height:1}
+.tile b{font-size:32px;font-variant-numeric:tabular-nums}
+.tabs a{transition:all .15s}.tabs a.on{background:var(--gold);color:#1a1205;border-color:var(--gold);font-weight:700}
+h2{font-size:24px;margin-top:40px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+h2:before{height:24px;width:5px;background:linear-gradient(var(--gold),#b8892b)}
+.sub{margin-top:10px}
+.rec{box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 6px 18px rgba(0,0,0,.18)}
+.rec::after{content:attr(data-e);position:absolute;right:-8px;bottom:-18px;font-size:92px;opacity:.07;line-height:1;pointer-events:none;transform:rotate(-12deg)}
+.rec.big::after{font-size:170px;right:10px;bottom:-30px;opacity:.09}
+.rec .val{letter-spacing:-1px;text-shadow:0 0 28px color-mix(in srgb,var(--a) 45%,transparent)}
+.rec .who{padding:6px 10px 6px 6px;margin-left:-6px;border-radius:99px;background:rgba(255,255,255,.05);width:fit-content}
+.rec .more{padding-top:2px}
+.rec.big{display:flex;flex-direction:column;justify-content:center}
+.rec.big .val{font-size:64px}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rec,.tile,.pair{animation:up .5s both}
+.rec:nth-child(2),.tile:nth-child(2){animation-delay:.05s}.rec:nth-child(3),.tile:nth-child(3){animation-delay:.1s}
+.rec:nth-child(4),.tile:nth-child(4){animation-delay:.15s}.rec:nth-child(5){animation-delay:.2s}.rec:nth-child(6){animation-delay:.25s}
+.rec:nth-child(7){animation-delay:.3s}.rec:nth-child(8){animation-delay:.35s}
+tbody tr td{transition:background .15s}
+tbody tr:hover td{background:rgba(245,197,66,.06)}
+.advt{display:flex;align-items:center;gap:10px;font-size:18px;margin:34px 0 14px}
+.advt::before{content:"⚡";font-size:18px}.advt::after{content:"";flex:1;height:1px;background:var(--line)}
+@media(prefers-reduced-motion:reduce){.rec,.tile,.pair{animation:none}.tile,.tabs a{transition:none}}
 </style>
 <link rel="stylesheet" href="theme.css"><script src="theme.js"></script>
 </head>
@@ -274,6 +306,7 @@ function renderCmp(list, s){
 }
 
 function render(){
+  setTimeout(function(){ if(window.__spy) window.__spy(); }, 0);
   var s = STATS;
   document.getElementById("app").hidden = false;
   document.getElementById("intro").textContent = s.games
@@ -292,10 +325,10 @@ function render(){
   var G = 0, W = 0, D = 0, bestS = null;
   list.forEach(function(p){G += p.games; W += p.wins; D += p.deaths; if(!bestS || p.best_win_streak > bestS.best_win_streak) bestS = p;});
   document.getElementById("tiles").innerHTML = list.length
-    ? '<div class="tile"><small>Parties jouées</small><b>'+s.games+'</b><span>par '+list.length+' joueur'+(list.length>1?"s":"")+'</span></div>'
-    + '<div class="tile"><small>Winrate du groupe</small><b>'+(G?Math.round(100*W/G):0)+'%</b><span>'+W+' V · '+(G-W)+' D</span></div>'
-    + '<div class="tile"><small>Morts au total</small><b>'+Math.round(D)+'</b><span>'+(G?(D/G).toFixed(1):0)+' par partie</span></div>'
-    + '<div class="tile"><small>Plus longue série</small><b>'+(bestS?bestS.best_win_streak+" V":"—")+'</b><span>'+(bestS?esc(bestS.name):"")+'</span></div>'
+    ? '<div class="tile" data-i="🎮"><small>Parties jouées</small><b>'+s.games+'</b><span>par '+list.length+' joueur'+(list.length>1?"s":"")+'</span></div>'
+    + '<div class="tile" data-i="📈"><small>Winrate du groupe</small><b>'+(G?Math.round(100*W/G):0)+'%</b><span>'+W+' V · '+(G-W)+' D</span></div>'
+    + '<div class="tile" data-i="💀"><small>Morts au total</small><b>'+Math.round(D)+'</b><span>'+(G?(D/G).toFixed(1):0)+' par partie</span></div>'
+    + '<div class="tile" data-i="🔥"><small>Plus longue série</small><b>'+(bestS?bestS.best_win_streak+" V":"—")+'</b><span>'+(bestS?esc(bestS.name):"")+'</span></div>'
     : "";
 
   // records
@@ -308,7 +341,7 @@ function render(){
     return r.value;
   }
   function card(r){
-    return '<article tabindex="0" data-key="'+r.key+'" class="rec'+(OPEN[r.key]?" open":"")+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
+    return '<article tabindex="0" data-e="'+(EM[r.key]||"🏆")+'" data-key="'+r.key+'" class="rec'+(OPEN[r.key]?" open":"")+(r.key==="troll"?" big":"")+'" style="--a:'+(ACC[r.key]||"#f5c542")+'"><div class="ic" aria-hidden="true">'+(EM[r.key]||"🏆")+'</div>'
       + '<div class="lab">'+esc(r.label)+'</div>'
       + '<div class="val">'+esc(fmtV(r))+'<small>'+esc(UNIT[r.key]||"")+'</small></div>'
       + '<div class="who">'+av(r.name,pav(r.riot))+esc(r.name)+'</div><div class="det">'+esc(r.detail||"")+'</div>'
@@ -385,6 +418,18 @@ fetch("data/stats.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return 
     e.textContent = "Le fichier data/stats.json n'existe pas encore. Il est créé au prochain passage automatique (Actions → update-ranking → Run workflow pour le lancer maintenant).";
   });
 loadDD();
+
+// onglet actif selon la section visible
+(function(){
+  var links = [].slice.call(document.querySelectorAll(".tabs a")), ids = links.map(function(a){return a.getAttribute("href").slice(1)});
+  function spy(){
+    var cur = ids[0];
+    ids.forEach(function(id){ var el = document.getElementById(id); if(el && el.getBoundingClientRect().top < 140) cur = id; });
+    if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 6) cur = ids[ids.length-1];
+    links.forEach(function(a){ a.classList.toggle("on", a.getAttribute("href") === "#"+cur); });
+  }
+  window.addEventListener("scroll", spy, {passive:true}); window.__spy = spy; spy();
+})();
 </script>
 </body>
 </html>
