@@ -1,5 +1,5 @@
 {
- "updated": 1793227478,
+ "updated": 1793229612,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -10,29 +10,29 @@
    "riot": "PurpleBBear#EUW",
    "tier": "GOLD",
    "div": 4,
-   "lp": 97,
+   "lp": 76,
    "w": 56,
-   "l": 53,
+   "l": 54,
    "champs": [
     "Vex",
     "Vex",
+    "Vex",
     "Tristana",
     "Vayne",
     "Tristana",
     "Vex",
     "Vayne",
     "Tristana",
-    "Tristana",
-    "Ornn"
+    "Tristana"
    ],
-   "last10": "WWLLLLLLLL",
+   "last10": "LWWLLLLLLL",
    "unranked": false,
    "lplast": {
     "win": null,
-    "loss": null
+    "loss": -21
    },
    "lpd": [
-    null,
+    -21,
     null,
     null,
     null,
@@ -126,10 +126,11 @@
    "riot": "ounf ding#koich",
    "tier": "EMERALD",
    "div": 3,
-   "lp": 40,
+   "lp": 20,
    "w": 127,
-   "l": 112,
+   "l": 113,
    "champs": [
+    "Leblanc",
     "Viktor",
     "Akali",
     "Akali",
@@ -140,13 +141,14 @@
     "Akali",
     "Akali"
    ],
-   "last10": "LWLWWLLWW",
+   "last10": "LLWLWWLLWW",
    "unranked": false,
    "lplast": {
     "win": 20,
     "loss": -20
    },
    "lpd": [
+    -20,
     -20,
     20,
     null,
