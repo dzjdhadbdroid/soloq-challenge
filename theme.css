@@ -43,7 +43,7 @@ nav a:hover,.back:hover{background:var(--card2);color:var(--wine)}
 
 /* ---- cartes et tableaux ---- */
 .tile,.rec,.pc,.pair,.cmp,.cmpd,.dlg,.team,.pcard{border-radius:4px}
-.tabs{top:68px}
+.tabs{top:68px;flex-wrap:wrap}
 .tabs a{border-radius:3px;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.8px}
 .tabs a.on{background:var(--wb);color:#fff;border-color:var(--wb)}
 .bar input,.bar select,.cmpbar select{background:var(--card);border:1px solid var(--line);border-radius:3px;color:var(--txt)}
@@ -53,8 +53,8 @@ tbody tr:hover{background:var(--card2)}
 .scroll tbody tr:hover td{background:transparent}
 @media(min-width:1201px){.scroll{background:var(--card);border:1px solid var(--line);box-shadow:0 12px 30px rgba(57,16,32,.06);border-radius:4px;overflow:hidden}
   .scroll th{background:var(--card2);padding:16px 12px}}
-.rk{font-family:var(--hf);color:var(--gold);font-size:24px}
-tr:nth-child(1) .rk{color:var(--gold2)}
+td.rk{font-family:var(--hf);color:var(--gold);font-size:24px}
+tr:nth-child(1) td.rk{color:var(--gold2)}
 .ch{background:var(--card2);border-radius:3px}.ch.w{border-color:var(--win);color:var(--win)}.ch.l{border-color:var(--loss);color:var(--loss)}
 .ci,.champ,.sp div{background:var(--card2)}
 .dv{background:var(--wb);color:#fff;border-color:var(--gold2)}
