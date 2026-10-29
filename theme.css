@@ -49,7 +49,8 @@ nav a:hover,.back:hover{background:var(--card2);color:var(--wine)}
 .bar input,.bar select,.cmpbar select{background:var(--card);border:1px solid var(--line);border-radius:3px;color:var(--txt)}
 .bar input:focus{outline:2px solid var(--wb)}
 th{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);font-weight:700}
-tbody tr:hover td{background:var(--card2)}
+tbody tr:hover{background:var(--card2)}
+.scroll tbody tr:hover td{background:transparent}
 @media(min-width:1201px){.scroll{background:var(--card);border:1px solid var(--line);box-shadow:0 12px 30px rgba(57,16,32,.06);border-radius:4px;overflow:hidden}
   .scroll th{background:var(--card2);padding:16px 12px}}
 .rk{font-family:var(--hf);color:var(--gold);font-size:24px}
