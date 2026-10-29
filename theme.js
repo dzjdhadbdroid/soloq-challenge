@@ -4,11 +4,11 @@
   function get(){ try{ return localStorage.getItem(KEY); }catch(e){ return null; } }
   function set(v){ try{ localStorage.setItem(KEY, v); }catch(e){} }
   function apply(t){ document.documentElement.setAttribute("data-theme", t); }
-  apply(get() === "light" ? "light" : "dark");
+  apply(get() === "dark" ? "dark" : "light");
   document.addEventListener("DOMContentLoaded", function(){
     var h = document.querySelector("header"); if(!h) return;
     var b = document.createElement("button"); b.type = "button"; b.className = "themebtn";
-    function label(){ var l = document.documentElement.getAttribute("data-theme") === "light"; b.textContent = l ? "🌙 Mode sombre" : "☀️ Mode éclairé"; b.setAttribute("aria-label", l ? "Passer en mode sombre" : "Passer en mode éclairé"); }
+    function label(){ var l = document.documentElement.getAttribute("data-theme") === "light"; b.textContent = l ? "🌙 Mode sombre" : "☀ Mode clair"; b.setAttribute("aria-label", l ? "Passer en mode sombre" : "Passer en mode clair"); }
     b.addEventListener("click", function(){
       var n = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
       apply(n); set(n); label();

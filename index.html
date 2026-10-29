@@ -114,7 +114,9 @@ td.lpm span{display:block;font-weight:700;font-size:13px;white-space:nowrap}td.l
   td.sh{grid-row:6}
   .ch{width:30px;height:30px}
 }
+.hero{--cw:1288px}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="theme.css"><script src="theme.js"></script>
 </head>
 <body>
@@ -124,12 +126,24 @@ td.lpm span{display:block;font-weight:700;font-size:13px;white-space:nowrap}td.l
 </header>
 
 <div class="hero">
-  <h1>Le SoloQ Challenge</h1>
-  <p>Un mois de classées. Le plus haut rank gagne.</p>
-  <div class="pill">Du <b id="d1"></b> au <b id="d2"></b> · <span id="left"></span></div>
+  <div class="eyebrow">◆ League of Legends · EUW · Compétition entre amis</div>
+  <h1>One month.<br><em>One king.</em></h1>
+  <p>Un mois de classées en solo/duo. Chaque victoire compte : un seul joueur atteindra le sommet du classement.</p>
+  <div class="hero-bottom">
+    <div class="hero-stat"><strong id="hs-left">—</strong><small id="hs-left-l">Jours restants</small></div>
+    <div class="hero-stat"><strong id="hs-pl">—</strong><small>Joueurs</small></div>
+    <div class="hero-stat"><strong id="hs-g">—</strong><small>Parties du challenge</small></div>
+    <div class="pill">Du <b id="d1"></b> au <b id="d2"></b> · <span id="left"></span></div>
+  </div>
 </div>
 
-<div class="wrap">
+<main class="wrap">
+<section class="section" id="podium-sec" hidden>
+  <div class="section-top"><div><div class="kicker">01 / The elite</div><h2>La course au sommet</h2></div><div class="subtitle">Les trois premiers du moment</div></div>
+  <div class="podium" id="podium"></div>
+</section>
+<section class="section" id="classement" style="padding-top:36px">
+  <div class="section-top"><div><div class="kicker">02 / Leaderboard</div><h2>Classement général</h2></div><div class="subtitle">Clique sur un joueur pour voir l'évolution de ses LP</div></div>
   <div class="note">Chargement du classement…</div>
   <div class="warn" id="warn" hidden></div>
   <div class="bar">
@@ -141,7 +155,6 @@ td.lpm span{display:block;font-weight:700;font-size:13px;white-space:nowrap}td.l
       <option value="wins">Victoires</option>
     </select>
   </div>
-  <p class="hint">Clique sur un joueur pour voir l'évolution de ses LP.</p>
   <div class="scroll">
   <table>
     <thead><tr><th>#</th><th>Joueur</th><th>Elo</th><th>Matchs</th><th>Victoires</th><th>Défaites</th><th>Winrate</th><th title="LP gagnés à la dernière victoire et perdus à la dernière défaite">Derniers LP (+ / −)</th><th>10 dernières parties</th><th></th></tr></thead>
@@ -149,7 +162,8 @@ td.lpm span{display:block;font-weight:700;font-size:13px;white-space:nowrap}td.l
   </table>
   </div>
   <div id="none" class="empty" hidden>Aucun joueur trouvé.</div>
-</div>
+</section>
+</main>
 
 
 <div class="modal" id="modal" hidden>
@@ -269,13 +283,34 @@ function setDates(){
   document.getElementById("d2").textContent = fmt(END);
   var now = new Date(), st = new Date(START+"T00:00:00"), e = new Date(END+"T23:59:59");   // heure locale, dernier jour inclus
   var el = document.getElementById("left");
-  if(now < st) el.textContent = "Commence dans " + Math.ceil((st-now)/864e5) + " j";
-  else if(now > e) el.textContent = "Challenge terminé";
-  else el.textContent = Math.ceil((e-now)/864e5) + " j restants";
+  var hl = document.getElementById("hs-left"), hll = document.getElementById("hs-left-l");
+  if(now < st){ el.textContent = "Commence dans " + Math.ceil((st-now)/864e5) + " j"; hl.textContent = Math.ceil((st-now)/864e5); hll.textContent = "Jours avant le début"; }
+  else if(now > e){ el.textContent = "Challenge terminé"; hl.textContent = "0"; hll.textContent = "Challenge terminé"; }
+  else { el.textContent = Math.ceil((e-now)/864e5) + " j restants"; hl.textContent = Math.ceil((e-now)/864e5); hll.textContent = "Jours restants"; }
 }
 setDates();
 
+function renderPodium(){
+  var sec = document.getElementById("podium-sec"), el = document.getElementById("podium");
+  var top = PLAYERS.slice().sort(function(a,b){return score(b)-score(a)}).slice(0,3);
+  document.getElementById("hs-pl").textContent = PLAYERS.length || "—";
+  if(!top.length){ sec.hidden = true; return; }
+  sec.hidden = false;
+  var order = top.length >= 3 ? [1,0,2] : top.map(function(_,i){return i}), medals = ["♛","🥈","🥉"];
+  el.innerHTML = order.map(function(i){
+    var p = top[i], hi = TIERS.indexOf(p.tier) >= 7;
+    var rt = p.unranked ? "Non classé" : LBL[p.tier] + (hi ? "" : " " + ROM[p.div]);
+    return '<button type="button" class="pcard'+(i===0?" first":"")+'" data-riot="'+esc(p.riot)+'" aria-label="Voir le profil de '+esc(p.name)+'">'
+      + '<div class="position">0'+(i+1)+'</div><div class="medal" aria-hidden="true">'+medals[i]+'</div>'
+      + '<div class="who">'+avHtml(p)+'<div class="pname">'+esc(p.name)+'</div></div>'
+      + '<div class="prank">'+esc(rt)+'</div>'
+      + '<div class="plp">'+(p.unranked ? "—" : p.lp+' <span>LP</span>')+'</div></button>';
+  }).join("");
+}
+document.getElementById("podium").addEventListener("click", function(e){ var b = e.target.closest(".pcard"); if(b) openPlayer(b.getAttribute("data-riot")); });
+
 function render(){
+  renderPodium();
   var q = document.getElementById("q").value.toLowerCase().trim();
   var k = document.getElementById("sort").value;
   var f = {elo:score, games:games, wr:wr, wins:function(p){return p.w}}[k];
@@ -311,7 +346,7 @@ function render(){
 var HIST = {}, STATS = null, lastFocus = null;
 function loadExtra(){
   fetch("data/history.json?t="+Date.now()).then(function(r){return r.ok?r.json():{}}).then(function(d){HIST=d}).catch(function(){});
-  fetch("data/stats.json?t="+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(d){STATS=d}).catch(function(){});
+  fetch("data/stats.json?t="+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(d){STATS=d; var g = document.getElementById("hs-g"); if(g && d) g.textContent = d.games;}).catch(function(){});
 }
 function cscore(t){var i=TIERS.indexOf(t[1]);return i>=7 ? 2800+t[3] : i*400+(4-t[2])*100+t[3]}
 function scoreLabel(v){
