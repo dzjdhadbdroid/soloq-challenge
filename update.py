@@ -315,13 +315,21 @@ keep = {m for i in info.values() for m in i["last10"]}
 for mid in [m for m, g in games.items() if g["t"] < START_TS and m not in keep]:
     del games[mid]
 
-save("lp_track.json", lp_track, separators=(",", ":"))
 save("lp_delta.json", lp_delta, separators=(",", ":"))
+current_ = {p_["riot"] for p_ in players}
+for k_ in [k for k in history if k not in current_]:
+    del history[k_]
+for k_ in [k for k in lp_track if k not in current_]:
+    del lp_track[k_]
+save("lp_track.json", lp_track, separators=(",", ":"))
 save("games.json", games, separators=(",", ":"))
 save("history.json", history, separators=(",", ":"))
 stats = build_stats(games, players, START_TS, now, END_TS)
 for riot_, pl_ in stats["players"].items():
     pl_["avatar"] = av_map.get(riot_)
+    # joueur pas encore classé (parties de placement) : on affiche ses parties du challenge à la place des totaux de saison
+    if riot_ in result and result[riot_].get("unranked"):
+        result[riot_]["w"], result[riot_]["l"] = pl_["wins"], pl_["losses"]
 save("stats.json", stats, separators=(",", ":"))
 
 # Le classement reflète toujours players.json (ajouts ET retraits).

@@ -233,6 +233,7 @@ function loadData(){
 }
 
 function score(p){
+  if(p.unranked) return -1 + Math.min(999, p.w + p.l) / 1000;   // non classés : après tous les classés, entre eux par nombre de parties
   var t = TIERS.indexOf(p.tier);
   return t >= 7 ? 2800 + (t-7)*0 + p.lp + (t-7)*5000 : t*400 + (4-p.div)*100 + p.lp;
 }
@@ -292,7 +293,7 @@ setDates();
 
 function renderPodium(){
   var sec = document.getElementById("podium-sec"), el = document.getElementById("podium");
-  var top = PLAYERS.slice().sort(function(a,b){return score(b)-score(a)}).slice(0,3);
+  var top = PLAYERS.filter(function(x){return !x.unranked}).sort(function(a,b){return score(b)-score(a)}).slice(0,3);   // le podium ne montre que des joueurs classés
   document.getElementById("hs-pl").textContent = PLAYERS.length || "—";
   if(!top.length){ sec.hidden = true; return; }
   sec.hidden = false;
