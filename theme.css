@@ -12,7 +12,7 @@ header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px
 nav a,.back{color:var(--mut);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;border-radius:3px}
 nav a.on{color:var(--wine);background:transparent;box-shadow:inset 0 -2px 0 var(--gold2)}
 nav a:hover,.back:hover{background:var(--card2);color:var(--wine)}
-.themebtn{margin-left:auto;background:var(--wb);border:0;color:#fff;border-radius:3px;padding:11px 18px;font:700 11px 'DM Sans',system-ui,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.themebtn{margin-left:auto;background:var(--wb);border:0;color:#fff;border-radius:3px;padding:9px 13px;font:700 16px/1 'DM Sans',system-ui,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
 .themebtn:hover{filter:brightness(1.15)}
 
 /* ---- bandeau d'accueil (toutes les pages) ---- */

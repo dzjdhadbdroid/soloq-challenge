@@ -8,7 +8,7 @@
   document.addEventListener("DOMContentLoaded", function(){
     var h = document.querySelector("header"); if(!h) return;
     var b = document.createElement("button"); b.type = "button"; b.className = "themebtn";
-    function label(){ var l = document.documentElement.getAttribute("data-theme") === "light"; b.textContent = l ? "🌙 Mode sombre" : "☀ Mode clair"; b.setAttribute("aria-label", l ? "Passer en mode sombre" : "Passer en mode clair"); }
+    function label(){ var l = document.documentElement.getAttribute("data-theme") === "light"; b.textContent = l ? "🌙" : "☀"; b.title = l ? "Mode sombre" : "Mode clair"; b.setAttribute("aria-label", l ? "Passer en mode sombre" : "Passer en mode clair"); }
     b.addEventListener("click", function(){
       var n = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
       apply(n); set(n); label();
