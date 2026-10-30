@@ -1,9 +1,14 @@
 {
- "updated": 1793356121,
+ "updated": 1793356261,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
- "errors": [],
+ "errors": [
+  {
+   "riot": "Annie IRL #Annie",
+   "msg": "photo introuvable : avatars/test.jpg"
+  }
+ ],
  "players": [
   {
    "name": "Purple",
@@ -199,7 +204,7 @@
     null,
     null
    ],
-   "avatar": "avatars/test.jpg?v=037b7415"
+   "avatar": null
   }
  ]
 }
