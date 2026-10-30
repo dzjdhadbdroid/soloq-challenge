@@ -155,6 +155,23 @@
       p.avatar = path;
       chain = chain.then(function(){ return putFile(path, ph.b64, ex && ex.sha, "Admin : photo de "+p.name); }).then(function(r){ changed.push("photo de "+p.name); if(r && r.content) S.avatars.push({name: r.content.name, path: path, sha: r.content.sha}); });
     });
+    // photos du dossier avatars/ à supprimer : celles des joueurs retirés, et les anciennes versions d'une photo remplacée
+    var IMG = /\.(png|jpe?g|webp|gif)$/i, keepPaths = {}, stems = {};
+    list.forEach(function(p){ if(p.avatar) keepPaths[p.avatar] = 1; stems[slug(p.name)] = 1; stems[slug(String(p.riot).split("#")[0])] = 1; });
+    var drop = {};
+    S.players.forEach(function(p){
+      if(!S.removed[p.riot]) return;
+      var st = [slug(p.name), slug(String(p.riot).split("#")[0])];
+      S.avatars.forEach(function(a){ if(IMG.test(a.name) && (a.path === p.avatar || st.indexOf(slug(a.name.replace(/\.[^.]+$/,""))) >= 0) && !keepPaths[a.path] && !stems[slug(a.name.replace(/\.[^.]+$/,""))]) drop[a.path] = a; });
+    });
+    list.forEach(function(p){
+      if(!S.photos[p.riot]) return;
+      S.avatars.forEach(function(a){ if(IMG.test(a.name) && a.path !== p.avatar && slug(a.name.replace(/\.[^.]+$/,"")) === slug(p.name) && !keepPaths[a.path]) drop[a.path] = a; });
+    });
+    Object.keys(drop).forEach(function(path){
+      chain = chain.then(function(){ return gh("/contents/"+path, {method:"DELETE", body:{message:"Admin : suppression de "+path, sha:drop[path].sha, branch:"main"}}); })
+        .then(function(){ S.avatars = S.avatars.filter(function(a){return a.path !== path}); changed.push("photo supprimée ("+path.replace("avatars/","")+")"); });
+    });
     var pj = JSON.stringify(list, null, 2) + "\n";
     if(JSON.stringify(list) !== S.orig || list.some(function(p){return p.avatar})){
       chain = chain.then(function(){ return putFile("players.json", b64utf8(pj), S.playersSha, "Admin : liste des joueurs"); }).then(function(r){ S.playersSha = r.content.sha; changed.push("joueurs"); });
