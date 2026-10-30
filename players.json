@@ -17,6 +17,7 @@
   },
   {
     "name": "test",
-    "riot": "Annie IRL #Annie"
+    "riot": "Annie IRL #Annie",
+    "avatar": "avatars/test.jpg"
   }
 ]
