@@ -1,5 +1,5 @@
 {
- "updated": 1793355638,
+ "updated": 1793355780,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -160,6 +160,24 @@
     null
    ],
    "avatar": "avatars/BILOU.png?v=efe70524"
+  },
+  {
+   "name": "test",
+   "riot": "test#EUW",
+   "tier": "IRON",
+   "div": 4,
+   "lp": 0,
+   "w": 0,
+   "l": 0,
+   "champs": [],
+   "last10": "",
+   "unranked": true,
+   "lplast": {
+    "win": null,
+    "loss": null
+   },
+   "lpd": [],
+   "avatar": "avatars/test.jpg?v=7bc295d9"
   }
  ]
 }
