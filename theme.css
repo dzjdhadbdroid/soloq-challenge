@@ -1,6 +1,6 @@
 /* Habillage du site : crème / bordeaux / doré, titres en Barlow Condensed (style « refonte »).
    Mode clair par défaut ; <html data-theme="dark"> = version sombre bordeaux. Bouton en haut à droite. */
-:root{color-scheme:light;--bg:#faf8f5;--card:#fff;--card2:#f8f3f3;--line:#eadfdf;--txt:#2b2024;--mut:#827a79;--gold:#ad7934;--gold2:#c99b50;--wine:#641d32;--wb:#641d32;--win:#27846a;--loss:#b44c5b;--up:#27846a;--blue:#2f6fcf;--red:#b44c5b;--hf:'Barlow Condensed','Arial Narrow',Impact,sans-serif}
+:root{color-scheme:light;--bg:#faf8f5;--card:#fff;--card2:#f8f3f3;--line:#eadfdf;--txt:#2b2024;--mut:#686060;--gold:#8a5a1c;--gold2:#a0701f;--wine:#641d32;--wb:#641d32;--win:#1f7259;--loss:#a63f4f;--up:#1f7259;--blue:#2a63b8;--red:#a63f4f;--hf:'Barlow Condensed','Arial Narrow',Impact,sans-serif}
 html[data-theme="dark"]{color-scheme:dark;--bg:#1a0c13;--card:#27121d;--card2:#321826;--line:#47242f;--txt:#f3e9eb;--mut:#b39ea5;--gold:#e0b66c;--gold2:#e0b66c;--wine:#e7a3b4;--wb:#7d2840;--win:#4ec3a0;--loss:#e0707f;--up:#4ec3a0;--blue:#6aa5ff;--red:#e0707f}
 html{scroll-padding-top:72px}
 body{background:var(--bg);color:var(--txt);font-family:'DM Sans',system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -88,13 +88,13 @@ html:not([data-theme="dark"]) .team.r{background:rgba(180,76,91,.06);border-colo
 .pcard{position:relative;background:var(--card);border:1px solid var(--line);padding:26px 23px;min-height:205px;box-shadow:0 12px 35px rgba(61,18,32,.05);cursor:pointer;transition:transform .15s;text-align:left;font:inherit;color:inherit}
 .pcard:hover{transform:translateY(-3px)}
 .pcard.first{background:linear-gradient(145deg,#70253c,#3d1425);color:#fff;min-height:250px;border-color:#a27a55}
-.pcard .position{font-family:var(--hf);font-size:62px;line-height:1;color:var(--line);font-weight:900}
-.pcard.first .position{color:#d5a95e}
+.pcard .position{font-family:var(--hf);font-size:62px;line-height:1;color:var(--mut);opacity:.4;font-weight:900}
+.pcard.first .position{color:#d5a95e;opacity:1}
 .pcard .medal{position:absolute;right:22px;top:25px;font-size:28px}
 .pcard .who{display:flex;align-items:center;gap:12px;margin-top:10px}
 .pcard .pname{font-family:var(--hf);font-size:32px;font-weight:800;text-transform:uppercase;line-height:1}
-.pcard .prank{font-size:11px;letter-spacing:.5px;color:var(--mut);margin-top:4px;text-transform:uppercase}
-.pcard.first .prank{color:#d9bfc7}
+.pcard .prank{font-size:12px;letter-spacing:.5px;color:var(--mut);margin-top:4px;text-transform:uppercase}
+.pcard.first .prank{color:#f0dde3}
 .pcard .plp{font-family:var(--hf);font-size:30px;font-weight:800;margin-top:16px}
 .pcard .plp span{font:700 11px 'DM Sans',sans-serif;color:var(--gold)}
 .pcard.first .plp span{color:#e7bf7d}
