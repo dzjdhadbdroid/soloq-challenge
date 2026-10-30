@@ -1,14 +1,9 @@
 {
- "updated": 1793356261,
+ "updated": 1793357447,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
- "errors": [
-  {
-   "riot": "Annie IRL #Annie",
-   "msg": "photo introuvable : avatars/test.jpg"
-  }
- ],
+ "errors": [],
  "players": [
   {
    "name": "Purple",
@@ -165,46 +160,6 @@
     null
    ],
    "avatar": "avatars/BILOU.png?v=efe70524"
-  },
-  {
-   "name": "test",
-   "riot": "Annie IRL #Annie",
-   "tier": "CHALLENGER",
-   "div": 1,
-   "lp": 4013,
-   "w": 930,
-   "l": 756,
-   "champs": [
-    "Nautilus",
-    "Annie",
-    "TwistedFate",
-    "Pantheon",
-    "Annie",
-    "Annie",
-    "Annie",
-    "Annie",
-    "Annie",
-    "Annie"
-   ],
-   "last10": "WLLLWLLWWW",
-   "unranked": false,
-   "lplast": {
-    "win": null,
-    "loss": null
-   },
-   "lpd": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "avatar": null
   }
  ]
 }
