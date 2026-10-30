@@ -1,5 +1,5 @@
 {
- "updated": 1793380440,
+ "updated": 1793382885,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -50,10 +50,11 @@
    "riot": "NotKuroGiryy#LUI",
    "tier": "PLATINUM",
    "div": 4,
-   "lp": 52,
-   "w": 270,
+   "lp": 71,
+   "w": 271,
    "l": 276,
    "champs": [
+    "Gnar",
     "Gnar",
     "Sion",
     "Gnar",
@@ -62,20 +63,19 @@
     "Gnar",
     "Gnar",
     "Gnar",
-    "Gnar",
-    "Gragas"
+    "Gnar"
    ],
-   "last10": "LWLLLWLLWL",
+   "last10": "WLWLLLWLLW",
    "unranked": false,
    "lplast": {
     "win": 19,
     "loss": -21
    },
    "lpd": [
+    19,
     -21,
     19,
     -21,
-    null,
     null,
     null,
     null,
