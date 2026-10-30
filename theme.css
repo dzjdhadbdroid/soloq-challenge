@@ -19,7 +19,7 @@ nav a:hover,.back:hover{background:var(--card2);color:var(--wine)}
 .hero{position:relative;overflow:hidden;text-align:left;margin:0;padding:56px max(16px,calc((100% - var(--cw,1208px))/2)) 60px;color:#fff;background:radial-gradient(ellipse at 78% 35%,#85334b 0,transparent 44%),linear-gradient(115deg,#250b18,#57192f)}
 .hero::before{content:"SOLOQ";font-family:var(--hf);font-weight:900;font-size:330px;line-height:1;position:absolute;right:-45px;top:-80px;color:rgba(255,255,255,.03);pointer-events:none}
 .hero>*{position:relative}
-.hero h1{font-family:var(--hf);font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.9;margin:0 0 14px;font-size:clamp(54px,8vw,104px);color:#fff;background:none;-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-fill-color:#fff}
+.hero h1{font-family:var(--hf);font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.9;margin:0 0 14px;font-size:clamp(40px,8vw,104px);color:#fff;background:none;-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-fill-color:#fff}
 .hero h1 em{color:#e0b66c;font-style:normal;-webkit-text-fill-color:#e0b66c}
 .hero p{display:block;background:none;border:0;border-radius:0;padding:0;color:#d7bec7;max-width:520px;line-height:1.7;font-size:15px;margin:0}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;color:#e4b972;text-transform:uppercase;margin-bottom:18px}
@@ -100,3 +100,4 @@ html:not([data-theme="dark"]) .team.r{background:rgba(180,76,91,.06);border-colo
 .pcard.first .plp span{color:#e7bf7d}
 @media(max-width:700px){.podium{grid-template-columns:1fr}.pcard.first{order:-1}.pcard,.pcard.first{min-height:auto}.section h2,#app>h2{font-size:36px}.hero{padding:40px 20px 44px}.hero::before{font-size:200px}.logo{font-size:24px}}
 @media(max-width:900px){.hero-stat strong{font-size:34px}}
+@media(max-width:480px){.hero h1{font-size:clamp(34px,12vw,54px);overflow-wrap:anywhere}}
