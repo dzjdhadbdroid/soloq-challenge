@@ -12,6 +12,7 @@ Site gratuit et automatique pour un challenge League of Legends entre amis : cla
 |---|---|
 | **Classement** | Podium, tableau (rang, LP, victoires, défaites, winrate, derniers LP gagnés/perdus, 10 dernières parties), courbe de LP au clic sur un joueur, parties en direct, carte de joueur à télécharger/partager |
 | **Statistiques** | Records (pire/meilleur KDA, séries, kills, morts, pentakills, premier sang, farm, dégâts, vision), stats par joueur, comparateur de deux joueurs, vis-à-vis |
+| **Roue** | Tire au sort un champion et un rôle au hasard (tous les champions, données Riot à jour) |
 | **Partie en cours** | Équipes, champions et rôles d'une partie en direct |
 
 Un bouton 🌙 / ☀ change entre mode clair et mode sombre.
