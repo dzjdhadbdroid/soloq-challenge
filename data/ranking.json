@@ -1,5 +1,5 @@
 {
- "updated": 1794148755,
+ "updated": 1794149879,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -9,32 +9,32 @@
    "name": "Purple",
    "riot": "PurpleBBear#EUW",
    "tier": "GOLD",
-   "div": 4,
-   "lp": 95,
-   "w": 57,
+   "div": 3,
+   "lp": 15,
+   "w": 58,
    "l": 54,
    "champs": [
     "Vex",
     "Vex",
     "Vex",
     "Vex",
+    "Vex",
     "Tristana",
     "Vayne",
     "Tristana",
     "Vex",
-    "Vayne",
-    "Tristana"
+    "Vayne"
    ],
-   "last10": "WLWWLLLLLL",
+   "last10": "WWLWWLLLLL",
    "unranked": false,
    "lplast": {
-    "win": 19,
+    "win": 20,
     "loss": -21
    },
    "lpd": [
+    20,
     19,
     -21,
-    null,
     null,
     null,
     null,
