@@ -71,11 +71,25 @@ tbody tr.clk{cursor:pointer}tbody tr.clk:focus-visible{outline:2px solid var(--g
 .tip{min-height:20px;font-size:14px;color:var(--txt);margin-bottom:4px}
 svg.chart{width:100%;height:auto;display:block;touch-action:none;user-select:none}
 .note{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.hero>.wheelart{position:absolute;right:-270px;top:50%;width:540px;height:540px;margin-top:-270px;pointer-events:none;filter:drop-shadow(0 18px 40px rgba(0,0,0,.35))}
+.hero>.wheelart{position:absolute;right:-270px;top:50%;width:540px;height:540px;margin-top:-270px;padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 18px 40px rgba(0,0,0,.35));transition:filter .2s;-webkit-tap-highlight-color:transparent}
+.hero>.wheelart:hover{filter:drop-shadow(0 18px 40px rgba(0,0,0,.35)) brightness(1.08)}.hero>.wheelart:focus-visible{outline:3px solid #e0b66c;outline-offset:-6px;border-radius:50%}.hero>.wheelart:disabled{cursor:wait}
+.wheelart svg{width:100%;height:100%;display:block;overflow:visible}
+.wheelcta{position:absolute;left:30px;bottom:34px;transform:none;background:#e0b66c;color:#2b1119;border-radius:3px;padding:8px 14px;font:800 12px/1 'DM Sans',system-ui,sans-serif;letter-spacing:1px;text-transform:uppercase;box-shadow:0 6px 16px rgba(0,0,0,.35);white-space:nowrap}
+.dice{position:fixed;inset:0;z-index:200;background:rgba(20,6,12,.72);display:flex;align-items:center;justify-content:center;padding:16px}
+.dice[hidden]{display:none}
+.dicebox{background:var(--card);border:1px solid var(--line);border-top:5px solid #e0b66c;border-radius:6px;max-width:420px;width:100%;padding:28px 24px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.dicebox small{display:block;font:700 11px 'DM Sans',sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.dicebox img{width:120px;height:120px;border-radius:50%;border:4px solid #e0b66c;margin:16px auto 12px;display:block;background:var(--card2)}
+.dicebox .dn{font-family:var(--hf);font-size:46px;font-weight:900;text-transform:uppercase;line-height:1;color:var(--txt)}
+.dicebox .dr{display:inline-block;margin-top:12px;background:var(--wb,#641d32);color:#fff;border-radius:3px;padding:7px 18px;font:800 14px 'DM Sans',sans-serif;letter-spacing:1.5px;text-transform:uppercase}
+.dicebox .db{display:flex;gap:10px;justify-content:center;margin-top:22px}
+.dicebox button{border-radius:3px;padding:11px 20px;font:800 12px 'DM Sans',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid var(--line);background:var(--card2);color:var(--txt)}
+.dicebox button.pri{background:var(--wb,#641d32);color:#fff;border-color:transparent;box-shadow:inset 0 -3px 0 #e0b66c}
+
 .wheelspin{transform-origin:260px 260px;animation:wspin 90s linear infinite}
 @keyframes wspin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.wheelspin{animation:none}}
-@media(max-width:900px){.hero>.wheelart{width:320px;height:320px;right:-190px;margin-top:-160px;opacity:.55}}
+@media(max-width:900px){.hero>.wheelart{width:320px;height:320px;right:-190px;margin-top:-160px}.wheelcta{left:12px;bottom:18px;font-size:11px;padding:7px 10px}}
 .note2{color:var(--mut);font-size:13px;margin:10px 0 0}
 .up{color:#4ade80}.dn{color:var(--loss)}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
@@ -137,7 +151,7 @@ td.lpm span{display:block;font-weight:700;font-size:13px;white-space:nowrap}td.l
 </header>
 
 <div class="hero">
-  <svg class="wheelart" viewBox="0 0 520 520" aria-hidden="true" focusable="false"><g class="wheelspin"><path d="M260 260L260.0 10.0A250 250 0 0 1 385.0 43.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L385.0 43.5A250 250 0 0 1 476.5 135.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L476.5 135.0A250 250 0 0 1 510.0 260.0Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L510.0 260.0A250 250 0 0 1 476.5 385.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L476.5 385.0A250 250 0 0 1 385.0 476.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L385.0 476.5A250 250 0 0 1 260.0 510.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L260.0 510.0A250 250 0 0 1 135.0 476.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L135.0 476.5A250 250 0 0 1 43.5 385.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L43.5 385.0A250 250 0 0 1 10.0 260.0Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L10.0 260.0A250 250 0 0 1 43.5 135.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L43.5 135.0A250 250 0 0 1 135.0 43.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L135.0 43.5A250 250 0 0 1 260.0 10.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><circle cx="260" cy="260" r="250" fill="none" stroke="#e0b66c" stroke-width="10"/><circle cx="260" cy="260" r="236" fill="none" stroke="#e0b66c" stroke-width="2" opacity=".7"/><circle cx="260" cy="260" r="46" fill="#5c1a33" stroke="#e0b66c" stroke-width="6"/><circle cx="260" cy="260" r="14" fill="#e0b66c"/></g></svg>
+  <button type="button" class="wheelart" id="heroWheel" aria-label="Tirer un champion et un rôle au hasard"><svg viewBox="0 0 520 520" aria-hidden="true" focusable="false"><polygon points="-22,242 -22,278 34,260" fill="#e0b66c" stroke="#5c1a33" stroke-width="3" stroke-linejoin="round"/><g class="wheelspin" id="wheelspin"><path d="M260 260L260.0 10.0A250 250 0 0 1 385.0 43.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L385.0 43.5A250 250 0 0 1 476.5 135.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L476.5 135.0A250 250 0 0 1 510.0 260.0Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L510.0 260.0A250 250 0 0 1 476.5 385.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L476.5 385.0A250 250 0 0 1 385.0 476.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L385.0 476.5A250 250 0 0 1 260.0 510.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L260.0 510.0A250 250 0 0 1 135.0 476.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L135.0 476.5A250 250 0 0 1 43.5 385.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L43.5 385.0A250 250 0 0 1 10.0 260.0Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L10.0 260.0A250 250 0 0 1 43.5 135.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L43.5 135.0A250 250 0 0 1 135.0 43.5Z" fill="#f7efe6" stroke="#e0b66c" stroke-width="3"/><path d="M260 260L135.0 43.5A250 250 0 0 1 260.0 10.0Z" fill="#8a2c46" stroke="#e0b66c" stroke-width="3"/><circle cx="260" cy="260" r="250" fill="none" stroke="#e0b66c" stroke-width="10"/><circle cx="260" cy="260" r="236" fill="none" stroke="#e0b66c" stroke-width="2" opacity=".7"/><circle cx="260" cy="260" r="46" fill="#5c1a33" stroke="#e0b66c" stroke-width="6"/><circle cx="260" cy="260" r="14" fill="#e0b66c"/></g></svg><span class="wheelcta" id="wheelCta">Clique pour tirer</span></button>
   <div class="eyebrow">◆ League of Legends · EUW · Compétition entre amis</div>
   <h1>One month.<br><em>One king.</em></h1>
   <p>Un mois de classées en solo/duo. Chaque victoire compte : un seul joueur atteindra le sommet du classement.</p>
@@ -485,5 +499,7 @@ loadDD();
 </script>
 <script src="card.js?v=1793269095"></script>
 <script src="admin.js?v=1793353903"></script>
+<div class="dice" id="dice" hidden role="dialog" aria-modal="true" aria-label="Résultat du tirage"><div class="dicebox"><small>Ton tirage</small><img id="diceImg" alt=""><div class="dn" id="diceName"></div><span class="dr" id="diceRole"></span><div class="db"><button type="button" class="pri" id="diceAgain">Retirer</button><button type="button" id="diceClose">Fermer</button></div></div></div>
+<script src="wheel.js?v=1"></script>
 </body>
 </html>
