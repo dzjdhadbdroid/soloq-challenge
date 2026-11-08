@@ -51,9 +51,11 @@ GitHub retarde souvent les tâches planifiées : le classement se met à jour en
 
 Le formulaire modifie directement les fichiers du dépôt : `players.json`, `config.json` et le dossier `avatars/` (la photo d'un joueur retiré est supprimée). Le site se met à jour 1 à 3 minutes après.
 
+**Bouton ↻ Actualiser** (page Classement) : pour tout le monde, il recharge les dernières données publiées. Si tu es connecté au mode admin, il lance aussi une vraie mise à jour auprès de Riot (rang et LP à jour en 1 à 3 minutes) ; ça demande en plus la permission **Actions : Read and write** sur ta clé.
+
 **Créer la clé GitHub** : GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token.
 - Repository access : **Only select repositories** → ce dépôt uniquement.
-- Permissions : **Contents → Read and write** (Metadata en lecture seule se met toute seule). Rien d'autre, surtout pas Administration.
+- Permissions : **Contents → Read and write** et **Actions → Read and write** (Metadata en lecture seule se met toute seule). Rien d'autre, surtout pas Administration.
 - Copie la clé `github_pat_…` : elle reste dans ton navigateur uniquement. Si elle expire, recrée-en une.
 
 ### À la main

@@ -70,6 +70,10 @@ tbody tr.clk{cursor:pointer}tbody tr.clk:focus-visible{outline:2px solid var(--g
 .sum b{display:block;color:var(--txt);font-size:19px;margin-top:2px}
 .tip{min-height:20px;font-size:14px;color:var(--txt);margin-bottom:4px}
 svg.chart{width:100%;height:auto;display:block;touch-action:none;user-select:none}
+.note{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.rmsg{flex:1;text-align:right;font-size:12px}
+.refbtn{background:var(--wb,#641d32);color:#fff;border:0;border-radius:3px;padding:7px 14px;font:700 12px 'DM Sans',system-ui,sans-serif;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.refbtn:hover{filter:brightness(1.15)}.refbtn:disabled{opacity:.6;cursor:wait}
 .note2{color:var(--mut);font-size:13px;margin:10px 0 0}
 .up{color:#4ade80}.dn{color:var(--loss)}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
@@ -149,7 +153,7 @@ td.lpm span{display:block;font-weight:700;font-size:13px;white-space:nowrap}td.l
 </section>
 <section class="section" id="classement" style="padding-top:36px">
   <div class="section-top"><div><div class="kicker">02 / Leaderboard</div><h2>Classement général</h2></div><div class="subtitle">Clique sur un joueur pour voir l'évolution de ses LP</div></div>
-  <div class="note">Chargement du classement…</div>
+  <div class="note"><span id="ntxt">Chargement du classement…</span><span id="rmsg" class="rmsg"></span><button type="button" id="refbtn" class="refbtn" title="Actualiser le classement et les LP">↻ Actualiser</button></div>
   <div class="warn" id="warn" hidden></div>
   <div class="bar">
     <input id="q" placeholder="Rechercher un joueur…">
@@ -220,7 +224,7 @@ function loadDD(){
 }
 
 function loadData(){
-  var n = document.querySelector(".note");
+  var n = document.getElementById("ntxt");
   fetch("data/ranking.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
     PLAYERS = d.players || [];
     if(d.start && d.end && (d.start !== START || d.end !== END)){ START = d.start; END = d.end; setDates(); }
@@ -236,6 +240,44 @@ function loadData(){
     render();
   }).catch(function(){ if(n) n.textContent = "Impossible de charger le classement pour le moment."; render(); });
 }
+
+/* ---- bouton Actualiser ----
+   Pour tout le monde : recharge les données les plus récentes publiées.
+   Avec la clé GitHub du mode admin : lance aussi une vraie mise à jour auprès de Riot (rang, LP), puis recharge. */
+var REFRESHING = false;
+function refreshAll(){
+  if(REFRESHING) return;
+  var b = document.getElementById("refbtn"), n = document.getElementById("rmsg"), tok = "";
+  try{ tok = localStorage.getItem("soloq-admin-token") || ""; }catch(e){}
+  function done(msg){ REFRESHING = false; if(b){ b.disabled = false; b.textContent = "↻ Actualiser"; } if(n) n.textContent = msg || ""; }
+  REFRESHING = true; if(b){ b.disabled = true; b.textContent = "Actualisation…"; }
+  var oldUpd = 0;
+  fetch("data/ranking.json?t="+Date.now()).then(function(r){return r.json()}).then(function(d){oldUpd = d.updated||0}).catch(function(){}).then(function(){
+    loadData(); loadLive(); loadExtra();
+    if(!tok){ setTimeout(function(){ done(); if(n) n.textContent = "Pour forcer une mise à jour auprès de Riot : mode admin (10 clics sur le logo)."; }, 900); return; }
+    return fetch("https://api.github.com/repos/dzjdhadbdroid/soloq-challenge/actions/workflows/update.yml/dispatches", {
+      method:"POST", headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"}, body:JSON.stringify({ref:"main"})
+    }).then(function(r){
+      if(r.status !== 204){
+        done(r.status === 403 || r.status === 404 ? "Données rechargées, mais ta clé GitHub n'a pas le droit « Actions : Read and write » : impossible de lancer la mise à jour Riot." : "Données rechargées (mise à jour Riot impossible : erreur " + r.status + ").");
+        return;
+      }
+      if(n) n.textContent = "Mise à jour lancée, ça prend 1 à 3 minutes…";
+      var tries = 0;
+      (function poll(){
+        tries++;
+        setTimeout(function(){
+          fetch("data/ranking.json?t="+Date.now()).then(function(r){return r.json()}).then(function(d){
+            if((d.updated||0) > oldUpd){ loadData(); loadExtra(); loadLive(); done(); }
+            else if(tries >= 24){ done("La mise à jour met plus de temps que prévu : réessaie dans un instant."); }
+            else poll();
+          }).catch(function(){ if(tries >= 24) done("Impossible de recharger les données."); else poll(); });
+        }, 10000);
+      })();
+    }).catch(function(){ done("Données rechargées (GitHub injoignable pour lancer la mise à jour)."); });
+  });
+}
+document.addEventListener("click", function(e){ if(e.target && e.target.id === "refbtn") refreshAll(); });
 
 function score(p){
   if(p.unranked) return -1 + Math.min(999, p.w + p.l) / 1000;   // non classés : après tous les classés, entre eux par nombre de parties
