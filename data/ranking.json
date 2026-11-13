@@ -1,5 +1,5 @@
 {
- "updated": 1794598998,
+ "updated": 1794602237,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -61,10 +61,9 @@
     "Gnar",
     "Gnar",
     "Gnar",
-    "Gnar",
     "Gnar"
    ],
-   "last10": "WWWLWWWWW",
+   "last10": "WWWLWWWW",
    "unranked": false,
    "lplast": {
     "win": 21,
@@ -78,8 +77,7 @@
     20,
     40,
     null,
-    null,
-    20
+    null
    ],
    "avatar": "avatars/KURO.png?v=8078ca45"
   },
