@@ -1,5 +1,5 @@
 {
- "updated": 1794854136,
+ "updated": 1794857850,
  "key_ok": true,
  "start": "2026-10-22",
  "end": "2026-11-22",
@@ -50,9 +50,9 @@
    "riot": "NotKuroGiryy#LUI",
    "tier": "PLATINUM",
    "div": 2,
-   "lp": 93,
+   "lp": 74,
    "w": 284,
-   "l": 279,
+   "l": 280,
    "champs": [
     "Gnar",
     "Gnar",
@@ -63,21 +63,21 @@
     "Gnar",
     "Gnar"
    ],
-   "last10": "WWWLWWWL",
+   "last10": "LWWWLWWW",
    "unranked": false,
    "lplast": {
     "win": 21,
     "loss": -19
    },
    "lpd": [
+    -19,
     21,
     null,
     null,
     -19,
     21,
     20,
-    20,
-    -20
+    20
    ],
    "avatar": "avatars/KURO.png?v=8078ca45"
   },
